@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="raisons">
+        <item>BadStorm</item>
+        <item>Unity</item>
+        <item>OutSkilled</item>
+        <item>Casual</item>
+        <item>Position</item>
+        <item>BadDrop</item>
+    </array>
+</resources>

@@ -1,14 +1,21 @@
 package com.example.fortnitetool;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+
+import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
-    private Spinner raison;
-    private Spinner joueur;
+    TabLayout tabLayout;
+    FragmentContainerView fragmentContainerView;
+    Fragment fragment = null;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
 
     //rendu a customiser les item des spinners comme le prof avait faoit pour son list view
 
@@ -17,26 +24,49 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         setWidgets();
+
     }
 
     private void setWidgets() {
-        raison = findViewById(R.id.cmbRaisons);
-        joueur = findViewById(R.id.cmbJoueur);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        fragmentContainerView = (FragmentContainerView) findViewById(R.id.fragmentContainerView);
 
-        //1. Data
-        String[] dataRaison = {"BadStorm", "Unity", "OutSkilled","Casual", "BadDrop","2v1", "Position"};
-        String[] dataJoueur = {"CptSemiColon", "SpecktR"};
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
-        //2. Adapter
-        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item, dataRaison);
-        ArrayAdapter<String> adapteurJoueur = new ArrayAdapter<String>(MainActivity.this,R.layout.support_simple_spinner_dropdown_item, dataJoueur);
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                fragment = null;
 
+                switch (tab.getPosition()) {
+                    case 0:{
+                        fragment = new PartieFragment();
+                        break;
+                    }
+                    case 1: {
+                        fragment = new StatsFragment();
+                        break;
+                    }
+                }
 
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragmentContainerView,fragment);
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.commit();
+            }
 
-        //3. Ler l'adapter avec lsiting
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-        raison.setAdapter(adapteurRaison);
-        joueur.setAdapter(adapteurJoueur);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
+
 }
