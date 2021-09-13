@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StatsFragment">
+    tools:context="fragment.StatsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -80,7 +80,8 @@
             android:layout_width="wrap_content"
             android:layout_height="76dp"
             android:gravity="center"
-            android:text="Enregistrer" />
+            android:text="Enregistrer"
+            tools:ignore="UsingOnClickInXml" />
 
     </LinearLayout>
 
