@@ -118,7 +118,7 @@ public class StatsFragment extends Fragment {
 
         for (Score score : scores) {
             if (score.getJoueur().equals(nomJoueur)) {
-                scoresString.add(score.getJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " Score: " + score.getScore());
+                scoresString.add(score.getJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.score) + ": " + score.getScore());
             }
         }
 
@@ -130,7 +130,7 @@ public class StatsFragment extends Fragment {
         ArrayList<String> partiesString = new ArrayList(0);
 
         for (Partie partie : parties) {
-            partiesString.add(new Date(partie.getTemps().getTime()).toString().substring(4, 19) + " Point: " + partie.getPointAmeliorer());
+            partiesString.add(new Date(partie.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.point) +": " + partie.getPointAmeliorer());
         }
         return partiesString;
     }

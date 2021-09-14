@@ -8,4 +8,5 @@
     <string name="score">Score</string>
     <string name="statistiques_par_parties">Game Stats</string>
     <string name="statistiques_par_joueur">Player Stats</string>
+    <string name="point">Item</string>
 </resources>
