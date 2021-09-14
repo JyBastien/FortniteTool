@@ -7,15 +7,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.fortnitetool.R;
 
 import java.util.ArrayList;
 import java.util.Date;
 
+import activity.MainActivity;
 import modele.Partie;
 import modele.Score;
 
@@ -70,9 +73,6 @@ public class StatsFragment extends Fragment {
     }
 
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,21 +87,39 @@ public class StatsFragment extends Fragment {
         //monter la liste des parties enregistrées
         listeParties = view.findViewById(R.id.lstParties);
         ArrayList<String> listeStringFormatParties = partiesArrayStringFactory();
-        ArrayAdapter<String> adapteurParties = new ArrayAdapter<String>(this.getActivity(),R.layout.support_simple_spinner_dropdown_item, listeStringFormatParties);
-        listeParties.setAdapter(adapteurParties);
+        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, listeStringFormatParties);
+        listeParties.setAdapter(adapteur);
+
+        //attacher la liste de joueur
+        cmbJoueurs = view.findViewById(R.id.cmbJoueurs);
+        MainActivity activity = (MainActivity) getActivity();
+        String[] listeJoueurs = activity.getNomJoueurs();
+        adapteur = new ArrayAdapter<String>(activity, R.layout.support_simple_spinner_dropdown_item, listeJoueurs);
+        cmbJoueurs.setAdapter(adapteur);
+        String nomJoueur = cmbJoueurs.getSelectedItem().toString();
 
         //monter la liste des scores enregistrées selon le nom de joueur
         listeScores = view.findViewById(R.id.lstScores);
-        ArrayList<String> listeStringFormatScores = scoresArrayStringFactory();
-        ArrayAdapter<String> adapteurScores = new ArrayAdapter<String>(this.getActivity(),R.layout.support_simple_spinner_dropdown_item, listeStringFormatScores);
-        listeScores.setAdapter(adapteurScores);
+        remplirStatsJoueur(nomJoueur);
+
+
     }
 
-    private ArrayList<String> scoresArrayStringFactory() {
+    private void remplirStatsJoueur(String nomJoueur) {
+
+        ArrayAdapter<String> adapteur;
+        ArrayList<String> listeStringFormatScores = scoresArrayStringFactory(nomJoueur);
+        adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, listeStringFormatScores);
+        listeScores.setAdapter(adapteur);
+    }
+
+    private ArrayList<String> scoresArrayStringFactory(String nomJoueur) {
         ArrayList<String> scoresString = new ArrayList(0);
 
-        for (Score score : scores){
-            scoresString.add(score.getJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4,19) + " Score: " + score.getScore());
+        for (Score score : scores) {
+            if (score.getJoueur().equals(nomJoueur)) {
+                scoresString.add(score.getJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " Score: " + score.getScore());
+            }
         }
 
         return scoresString;
@@ -111,8 +129,8 @@ public class StatsFragment extends Fragment {
 
         ArrayList<String> partiesString = new ArrayList(0);
 
-        for (Partie partie : parties){
-            partiesString.add(new Date(partie.getTemps().getTime()).toString().substring(4,19) + " Point: " + partie.getPointAmeliorer());
+        for (Partie partie : parties) {
+            partiesString.add(new Date(partie.getTemps().getTime()).toString().substring(4, 19) + " Point: " + partie.getPointAmeliorer());
         }
         return partiesString;
     }
@@ -120,10 +138,26 @@ public class StatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_stats, container,false);
+        View view = inflater.inflate(R.layout.fragment_stats, container, false);
         setWidgets(view);
+        setListeners();
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void setListeners() {
+        cmbJoueurs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String nomJoueur = cmbJoueurs.getSelectedItem().toString();
+                remplirStatsJoueur(nomJoueur);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 }

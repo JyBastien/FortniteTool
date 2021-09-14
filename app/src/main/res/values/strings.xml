@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">FortniteTool</string>
-    <string name="menuTitle">Tableau de Bord</string>
-    <string name="suiviTitre">Stats</string>
-    <color name="menuTitleColor">#FFFSDC49</color>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="partie">Game</string>
+    <string name="stats">Stats</string>
+    <string name="point_am_liorer">Field to Improve</string>
+    <string name="enregistrer">Save</string>
+    <string name="joueur">Player</string>
+    <string name="score">Score</string>
+    <string name="statistiques_par_parties">Game Stats</string>
+    <string name="statistiques_par_joueur">Player Stats</string>
 </resources>

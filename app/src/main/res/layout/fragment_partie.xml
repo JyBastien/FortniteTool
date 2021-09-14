@@ -13,11 +13,23 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#03A9F4"
+            android:backgroundTint="#3F51B5" />
+
+        <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="30dp"
-            android:text="Point à Améliorer"
+            android:padding="15dp"
+            android:text="@string/point_am_liorer"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -25,26 +37,28 @@
         <Spinner
             android:id="@+id/cmbRaisons"
             android:layout_width="match_parent"
-            android:layout_height="78dp"
+            android:layout_height="wrap_content"
             android:background="@android:drawable/btn_dropdown" />
 
         <Button
             android:id="@+id/btnRaison"
             android:layout_width="wrap_content"
-            android:layout_height="75dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Enregistrer" />
+            android:text="@string/enregistrer" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/textView9"
             android:layout_width="match_parent"
-            android:layout_height="51dp" />
+            android:layout_height="wrap_content"
+            android:background="#03A9F4"
+            android:backgroundTint="#3F51B5" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="105dp"
-            android:layout_height="82dp"
-            android:text="Joueur"
+            android:layout_height="58dp"
+            android:text="@string/joueur"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -52,13 +66,19 @@
         <Spinner
             android:id="@+id/cmbJoueur"
             android:layout_width="match_parent"
-            android:layout_height="56dp" />
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="51dp"
-            android:text="Score"
+            android:text="@string/score"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -78,10 +98,17 @@
         <Button
             android:id="@+id/btnScore"
             android:layout_width="wrap_content"
-            android:layout_height="76dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Enregistrer"
+            android:text="@string/enregistrer"
             tools:ignore="UsingOnClickInXml" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#03A9F4"
+            android:backgroundTint="#3F51B5" />
 
     </LinearLayout>
 

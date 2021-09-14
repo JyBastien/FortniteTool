@@ -46,6 +46,7 @@ public class PartieFragment extends Fragment {
     private String nomjoueur;
     private int points = -1;
     private String[] nomJoueurs;
+    private String[] pointsAmeliorer;
 
 
     // TODO: Rename and change types of parameters
@@ -94,6 +95,7 @@ public class PartieFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_partie, container,false);
         MainActivity activity = (MainActivity) getActivity();
         nomJoueurs = activity.getNomJoueurs();
+        pointsAmeliorer = activity.getPointsAmeliorer();
         setWidgets(view);
         setListeners();
 
@@ -179,7 +181,6 @@ public class PartieFragment extends Fragment {
                 try {
                     points = Integer.parseInt(txtScore.getText().toString());
                 } catch (Exception e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -196,11 +197,11 @@ public class PartieFragment extends Fragment {
         txtScore = view.findViewById(R.id.txtScore);
 
         //1. Data
-        String[] dataRaison = {"BadStorm", "Unity", "OutSkilled","Casual", "BadDrop","2v1", "Position"};
+
 
         //2. Adapter
-        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(),R.layout.support_simple_spinner_dropdown_item, dataRaison);
-        ArrayAdapter<String> adapteurJoueur = new ArrayAdapter<String>(this.getActivity(),R.layout.support_simple_spinner_dropdown_item, nomJoueurs);
+        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(),R.layout.itemliste, pointsAmeliorer);
+        ArrayAdapter<String> adapteurJoueur = new ArrayAdapter<String>(this.getActivity(),R.layout.itemliste, nomJoueurs);
 
 
 

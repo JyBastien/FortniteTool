@@ -108,4 +108,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public String[] getPointsAmeliorer() {
+        String[] reponse = {"BadStorm", "Unity", "OutSkilled","Casual", "BadDrop", "Position", "HotDrop"};
+        return reponse;
+    }
 }
