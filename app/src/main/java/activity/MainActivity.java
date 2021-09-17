@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
+import data.DbAdapter;
 import fragment.PartieFragment;
 import com.example.fortnitetool.R;
 import fragment.StatsFragment;
@@ -19,6 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private DbAdapter dbAdapter;
     private TabLayout tabLayout;
     private FragmentContainerView fragmentContainerView;
     private Fragment fragment = null;
@@ -36,8 +38,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setWidgets();
-        this.parties = fetchParties();
-        this.scores = fetchScores();
+        dbAdapter = new DbAdapter(MainActivity.this);
+        dbAdapter.ouvrirBd();
+        this.parties = dbAdapter.fetchParties();
+        this.scores = dbAdapter.fetchScores();
+        dbAdapter.fermerBd();
+
         this.nomJoueurs = fetchNomJoueurs();
     }
 
@@ -46,15 +52,6 @@ public class MainActivity extends AppCompatActivity {
         return nomJoueurs;
     }
 
-    private ArrayList<Score> fetchScores() {
-        scores = new ArrayList(0);
-        return scores;
-    }
-
-    private ArrayList<Partie> fetchParties() {
-        parties = new ArrayList(0);
-        return parties;
-    }
 
     public String[] getNomJoueurs() {
         return nomJoueurs;
@@ -102,14 +99,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void ajouterPartie(Partie partie){
         parties.add(partie);
+        dbAdapter.ouvrirBd();
+        dbAdapter.ajouterPartie(partie);
+        dbAdapter.fermerBd();
     }
     public void ajouterScore(Score score){
         scores.add(score);
+        dbAdapter.ouvrirBd();
+        dbAdapter.ajouterScore(score);
+        dbAdapter.fermerBd();
     }
 
 
     public String[] getPointsAmeliorer() {
-        String[] reponse = {"BadStorm", "Unity", "OutSkilled","Casual", "BadDrop", "Position", "HotDrop"};
+        String[] reponse = {"BadStorm", "Unity", "OutSkilled","Casual", "BadDrop", "Position", "HotDrop", "Greed", "BadLoot"};
         return reponse;
     }
 }

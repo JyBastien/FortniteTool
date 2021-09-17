@@ -9,4 +9,6 @@
     <string name="statistiques_par_parties">Statistiques par Parties</string>
     <string name="statistiques_par_joueur">Statistiques par joueur</string>
     <string name="point">Point</string>
+    <string name="DateIncorrecte">Format de date incorrecte</string>
+
 </resources>
