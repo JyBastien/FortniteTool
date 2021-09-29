@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DataExportManager">
@@ -36,10 +36,7 @@
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="da2ae604-5212-487a-9f0e-f4dc96df7d4a" object-ref="schemas/main/tables/Game" />
-      <object connection-id="da2ae604-5212-487a-9f0e-f4dc96df7d4a" object-ref="schemas/main/tables/Score" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="da2ae604-5212-487a-9f0e-f4dc96df7d4a" />

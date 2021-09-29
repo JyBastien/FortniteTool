@@ -74,6 +74,11 @@ public class DbAdapter {
         return parties;
     }
 
+    public Boolean getBoolean(){
+        return null;
+    }
+
+
     public ArrayList<Score> fetchScores(){
         ArrayList<Score> scores = new ArrayList<>(0);
         String[] colonnes = {DataAccess.COL_NOM_JOUEUR,DataAccess.COL_SCORE, DataAccess.COL_DATE};

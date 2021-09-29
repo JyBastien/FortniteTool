@@ -24,6 +24,9 @@ import java.util.Calendar;
 import activity.MainActivity;
 import modele.Partie;
 import modele.Score;
+import utils.AbstractOnItemListener;
+import utils.AbstractTextWatcher;
+import utils.Validateur;
 
 
 /**
@@ -37,35 +40,23 @@ public class PartieFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final int PAS_SCORE = -1;
     private Spinner cmbRaison;
     private Spinner cmbJoueur;
-    private Button btnRaison;
-    private Button btnScore;
+    private Button btnEnregistrer;
     private TextView txtScore;
     private String pointAmeliorer;
     private String nomjoueur;
-    private int points = -1;
+    private int points = PAS_SCORE;
     private String[] nomJoueurs;
     private String[] pointsAmeliorer;
-
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    public PartieFragment() {
-        // Required empty public constructor
-    }
+    public PartieFragment() {/* Required empty public constructor */}
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PArtieFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PartieFragment newInstance(String param1, String param2) {
         PartieFragment fragment = new PartieFragment();
         Bundle args = new Bundle();
@@ -74,9 +65,6 @@ public class PartieFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,98 +72,38 @@ public class PartieFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
-
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_partie, container,false);
+        View view = inflater.inflate(R.layout.fragment_partie, container, false);
         MainActivity activity = (MainActivity) getActivity();
         nomJoueurs = activity.getNomJoueurs();
         pointsAmeliorer = activity.getPointsAmeliorer();
         setWidgets(view);
         setListeners();
-
-
         // Inflate the layout for this fragment
         return view;
     }
-
     private void setListeners() {
-        btnRaison.setOnClickListener(new View.OnClickListener() {
+        btnEnregistrer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (pointAmeliorer != null){
-                    Timestamp temps = new Timestamp(Calendar.getInstance().getTime().getTime());
-                    Partie partie = new Partie(temps, pointAmeliorer);
-                    MainActivity activity = (MainActivity) getActivity();
-                    activity.ajouterPartie(partie);
-                }else {
-                    //todo user ressource
-                    Toast.makeText(getActivity(), "Veuillez sélectionner un point à améliorer", Toast.LENGTH_SHORT).show();
-                }
+                enregistrerFormulaire();
             }
         });
-        btnScore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (nomjoueur != null){
-                    if (points != -1){
-                        Timestamp temps = new Timestamp(Calendar.getInstance().getTime().getTime());
-                        Score score = new Score(temps,nomjoueur, points);
-                        MainActivity activity = (MainActivity) getActivity();
-                        activity.ajouterScore(score);
-                        txtScore.setText("");
-                    }else {
-                        //todo user ressource
-                        Toast.makeText(getActivity(), "Veuillez saisir un score", Toast.LENGTH_SHORT).show();
-                    }
-                }else {
-                    //todo user ressource
-                    Toast.makeText(getActivity(), "Veuillez sélectionner un nom de joueur", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-        cmbRaison.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        cmbRaison.setOnItemSelectedListener(new AbstractOnItemListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 pointAmeliorer = cmbRaison.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        cmbJoueur.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            }});
+        cmbJoueur.setOnItemSelectedListener(new AbstractOnItemListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 nomjoueur = cmbJoueur.getSelectedItem().toString();
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
         });
-
-        //todo make an adapter
-        txtScore.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
+        txtScore.addTextChangedListener(new AbstractTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
@@ -184,30 +112,56 @@ public class PartieFragment extends Fragment {
                 }
             }
         });
-
     }
-
-
+    private void enregistrerFormulaire() {
+        int reponse = Validateur.verifierFormulaire(this);
+        if (reponse == Validateur.SUCCES) {
+            enregistrerPoint();
+            enregistrerScore();
+            Toast.makeText(getActivity(), R.string.PartieEnregistree, Toast.LENGTH_SHORT).show();
+        } else if (reponse == Validateur.PAS_POINT_AMELIORER) {
+            Toast.makeText(getActivity(), R.string.SaisirPointAmeliorer, Toast.LENGTH_SHORT).show();
+        } else if (reponse == Validateur.PAS_DE_SCORE) {
+            Toast.makeText(getActivity(), R.string.SaisirScore, Toast.LENGTH_SHORT).show();
+        } else if (reponse == Validateur.PAS_DE_JOUEUR) {
+            Toast.makeText(getActivity(), R.string.SaisirJoueur, Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void enregistrerPoint() {
+        Timestamp temps = new Timestamp(Calendar.getInstance().getTime().getTime());
+        Partie partie = new Partie(temps, pointAmeliorer);
+        MainActivity activity = (MainActivity) getActivity();
+        activity.ajouterPartie(partie);
+    }
+    private void enregistrerScore() {
+        Timestamp temps = new Timestamp(Calendar.getInstance().getTime().getTime());
+        Score score = new Score(temps, nomjoueur, points);
+        MainActivity activity = (MainActivity) getActivity();
+        activity.ajouterScore(score);
+        txtScore.setText("");
+    }
     private void setWidgets(View view) {
-
         cmbRaison = (Spinner) view.findViewById(R.id.cmbRaisons);
         cmbJoueur = (Spinner) view.findViewById(R.id.cmbJoueur);
-        btnScore = view.findViewById(R.id.btnScore);
-        btnRaison = view.findViewById(R.id.btnRaison);
+        btnEnregistrer = view.findViewById(R.id.btnEnregistrer);
         txtScore = view.findViewById(R.id.txtScore);
 
-        //1. Data
-
-
         //2. Adapter
-        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(),R.layout.itemliste, pointsAmeliorer);
-        ArrayAdapter<String> adapteurJoueur = new ArrayAdapter<String>(this.getActivity(),R.layout.itemliste, nomJoueurs);
-
-
+        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(), R.layout.itemliste, pointsAmeliorer);
+        ArrayAdapter<String> adapteurJoueur = new ArrayAdapter<String>(this.getActivity(), R.layout.itemliste, nomJoueurs);
 
         //3. Ler l'adapter avec lsiting
-
         cmbRaison.setAdapter(adapteurRaison);
         cmbJoueur.setAdapter(adapteurJoueur);
+    }
+
+    public String getPointAmeliorer() {
+        return pointAmeliorer;
+    }
+    public String getNomjoueur() {
+        return nomjoueur;
+    }
+    public int getPoints() {
+        return points;
     }
 }

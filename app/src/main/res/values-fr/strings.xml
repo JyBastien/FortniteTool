@@ -10,5 +10,8 @@
     <string name="statistiques_par_joueur">Statistiques par joueur</string>
     <string name="point">Point</string>
     <string name="DateIncorrecte">Format de date incorrecte</string>
-
+    <string name="SaisirPointAmeliorer">Veuillez sélectionner un point à améliorer</string>
+    <string name="SaisirScore">Veuillez saisir un score</string>
+    <string name="SaisirJoueur">Veuillez sélectionner un nom de joueur</string>
+    <string name="PartieEnregistree">La partie a été enregistrée</string>
 </resources>
