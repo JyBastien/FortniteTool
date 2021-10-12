@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fragment.PartieFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtTitreConfig"
+            android:layout_width="259dp"
+            android:layout_height="92dp"
+            android:layout_marginStart="76dp"
+            android:layout_marginTop="36dp"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="34sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ListView
+            android:id="@+id/lstElementConfig"
+            android:layout_width="411dp"
+            android:layout_height="311dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitreConfig" />
+
+        <Button
+            android:id="@+id/btnAjouter"
+            android:layout_width="152dp"
+            android:layout_height="76dp"
+            android:layout_marginStart="128dp"
+            android:layout_marginTop="24dp"
+            android:text="Ajouter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lstElementConfig" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

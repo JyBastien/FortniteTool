@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.fortnitetool.R;
 
@@ -21,6 +20,7 @@ import java.util.Date;
 import activity.MainActivity;
 import modele.Partie;
 import modele.Score;
+import utils.Persistable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,18 +40,11 @@ public class StatsFragment extends Fragment {
     private Spinner cmbJoueurs;
     private String mParam1;
     private String mParam2;
-    private String[] nomJoueurs;
-    private ArrayList<Partie> parties;
-    private ArrayList<Score> scores;
+    private MainActivity mainActivity;
+
 
     public StatsFragment() {
         // Required empty public constructor
-    }
-
-    public StatsFragment(ArrayList<Partie> parties, ArrayList<Score> scores, String[] nomJoueurs) {
-        this.parties = parties;
-        this.scores = scores;
-        this.nomJoueurs = nomJoueurs;
     }
 
     /**
@@ -83,6 +76,8 @@ public class StatsFragment extends Fragment {
     }
 
     private void setWidgets(View view) {
+        //associer l'activity main a la propriété activity
+        this.mainActivity = (MainActivity) this.getActivity();
 
         //monter la liste des parties enregistrées
         listeParties = view.findViewById(R.id.lstParties);
@@ -93,7 +88,7 @@ public class StatsFragment extends Fragment {
         //attacher la liste de joueur
         cmbJoueurs = view.findViewById(R.id.cmbJoueurs);
         MainActivity activity = (MainActivity) getActivity();
-        String[] listeJoueurs = activity.getNomJoueurs();
+        ArrayList<String> listeJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object) activity.getJoueurs()) ;
         adapteur = new ArrayAdapter<String>(activity, R.layout.support_simple_spinner_dropdown_item, listeJoueurs);
         cmbJoueurs.setAdapter(adapteur);
         String nomJoueur = cmbJoueurs.getSelectedItem().toString();
@@ -115,10 +110,10 @@ public class StatsFragment extends Fragment {
 
     private ArrayList<String> scoresArrayStringFactory(String nomJoueur) {
         ArrayList<String> scoresString = new ArrayList(0);
-
+        ArrayList<Score> scores = mainActivity.getScores();
         for (Score score : scores) {
-            if (score.getJoueur().equals(nomJoueur)) {
-                scoresString.add(score.getJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.score) + ": " + score.getScore());
+            if (score.getNomJoueur().equals(nomJoueur)) {
+                scoresString.add(score.getNomJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.score) + ": " + score.getScore());
             }
         }
 
@@ -128,7 +123,7 @@ public class StatsFragment extends Fragment {
     private ArrayList<String> partiesArrayStringFactory() {
 
         ArrayList<String> partiesString = new ArrayList(0);
-
+        ArrayList<Partie> parties = mainActivity.getParties();
         for (Partie partie : parties) {
             partiesString.add(new Date(partie.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.point) +": " + partie.getPointAmeliorer());
         }

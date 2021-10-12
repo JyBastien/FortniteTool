@@ -7,14 +7,23 @@
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/activity_menu.xml" value="0.24003623188405798" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/activity_partie.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/activity_stats.xml" value="0.24003623188405798" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_config.xml" value="0.12926136363636365" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_element_config.xml" value="0.23385416666666667" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_joueur_config.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_partie.xml" value="0.33" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_partie2.xml" value="0.3140625" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_partie3.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_partie_config.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_point_config.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/fragment_stats.xml" value="0.25" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/itemliste.xml" value="0.3145833333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/jhn.xml" value="0.2046875" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/menuitem.xml" value="0.24003623188405798" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/menulayout.xml" value="0.24003623188405798" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/message_bienvenu.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/ttt.xml" value="0.2046875" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/menu/config_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/xml/root_preferences.xml" value="0.1" />
       </map>
     </option>
   </component>

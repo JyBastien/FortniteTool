@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import android.widget.Toast;
 import com.example.fortnitetool.R;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import activity.MainActivity;
@@ -26,6 +26,7 @@ import modele.Partie;
 import modele.Score;
 import utils.AbstractOnItemListener;
 import utils.AbstractTextWatcher;
+import utils.Persistable;
 import utils.Validateur;
 
 
@@ -48,8 +49,8 @@ public class PartieFragment extends Fragment {
     private String pointAmeliorer;
     private String nomjoueur;
     private int points = PAS_SCORE;
-    private String[] nomJoueurs;
-    private String[] pointsAmeliorer;
+    private ArrayList<String> nomJoueurs;
+    private ArrayList<String> pointsAmeliorer;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -78,8 +79,8 @@ public class PartieFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_partie, container, false);
         MainActivity activity = (MainActivity) getActivity();
-        nomJoueurs = activity.getNomJoueurs();
-        pointsAmeliorer = activity.getPointsAmeliorer();
+        nomJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object)activity.getJoueurs());
+        pointsAmeliorer = Persistable.toArrayString((ArrayList<Persistable>) (Object)activity.getPoints());
         setWidgets(view);
         setListeners();
         // Inflate the layout for this fragment

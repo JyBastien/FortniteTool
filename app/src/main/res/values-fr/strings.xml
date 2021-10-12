@@ -14,4 +14,7 @@
     <string name="SaisirScore">Veuillez saisir un score</string>
     <string name="SaisirJoueur">Veuillez sélectionner un nom de joueur</string>
     <string name="PartieEnregistree">La partie a été enregistrée</string>
+    <string name="points_am_liorer">Points à améliorer</string>
+    <string name="joueurs">Joueurs</string>
+    <string name="ramp_up">Analyse Ramp-Up</string>
 </resources>
