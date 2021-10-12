@@ -12,6 +12,8 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import modele.Joueur;
+import modele.Point;
 import modele.Score;
 import utils.Persistable;
 import utils.TimestampParser;
@@ -65,9 +67,10 @@ public class DbAdapter {
     }
 
 
-
-
-
-
-
+    public void updateJoueur(Joueur joueur, String nouveauNom) {
+        db.update(joueur.getTableName(),joueur.getContentValues(),DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{joueur.getNom()});
+    }
+    public void updatePoint(Point point, String nouveauNom) {
+        db.update(point.getTableName(),point.getContentValues(),  DataAccess.COL_NOM_POINT + " = ?",new String[]{point.getNom()});
+    }
 }

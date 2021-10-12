@@ -136,5 +136,7 @@ public class ConfigFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
-
+    public Fragment getFragment() {
+        return fragment;
+    }
 }

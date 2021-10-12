@@ -10,16 +10,14 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import data.DbAdapter;
 import fragment.ConfigFragment;
+import fragment.ElementConfigFragment;
 import fragment.PartieFragment;
 
 import com.example.fortnitetool.R;
@@ -31,8 +29,6 @@ import modele.Point;
 import modele.Score;
 
 import com.google.android.material.tabs.TabLayout;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -245,11 +241,40 @@ public class MainActivity extends AppCompatActivity {
         return scores;
     }
 
+    public Fragment getFragment() {
+        return fragment;
+    }
 
     public FragmentTransaction getFragmentTransaction() {
         return fragmentTransaction;
     }
 
+    public void modifierPoint(Point ancienPoint,String nouveauNom){
+        for (Point point : this.points){
+            if (point.getNom().equals(ancienPoint.getNom())){
+                point.setNom(nouveauNom);
+            }
+        }
+        dbAdapter.ouvrirBd();
+        dbAdapter.updatePoint(ancienPoint,nouveauNom);
+        dbAdapter.fermerBd();
+        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
+    }
 
+    public void modifierJoueur(Joueur ancienJoueur,String nouveauNom){
+        for (Joueur joueur : this.joueurs){
+            if (joueur.getNom().equals(ancienJoueur.getNom())){
+                joueur.setNom(nouveauNom);
+            }
+        }
+        dbAdapter.ouvrirBd();
+        dbAdapter.updateJoueur(ancienJoueur,nouveauNom);
+        dbAdapter.fermerBd();
+        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.joueurs)));
+    }
 
+    private void retourElementConfig(Fragment fragment) {
+        ConfigFragment configFragment = (ConfigFragment) this.fragment;
+        configFragment.remplacerFragment(fragment);
+    }
 }

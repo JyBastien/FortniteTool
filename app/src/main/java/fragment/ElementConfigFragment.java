@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +56,21 @@ public class ElementConfigFragment extends Fragment {
 
     private void setListeners() {
         setBtnInsertListener();
+        setListViewListener();
+    }
+
+    private void setListViewListener() {
+        this.listeElementView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                modifierElement(listeElementView.getItemAtPosition(i).toString());
+            }
+        });
+    }
+
+    private void modifierElement(String nomElement) {
+        ConfigFragment configFragment = (ConfigFragment) activity.getFragment();
+        configFragment.remplacerFragment(new ModifierElementFragment(this.titre, nomElement));
     }
 
     private void setBtnInsertListener() {
@@ -73,9 +89,6 @@ public class ElementConfigFragment extends Fragment {
         // Set up the input
         EditText txtReponse = new EditText(view.getContext());
         builder.setView(txtReponse);
-        //final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        //input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -95,18 +108,18 @@ public class ElementConfigFragment extends Fragment {
         }else {
             activity.ajouterJoueur(new Joueur(reponse));
         }
+        configurerListe();
     }
 
     private void setWidgets(View view) {
         this.txtTitre = view.findViewById(R.id.txtTitreConfig);
         txtTitre.setText(this.titre);
         btnAjouter = view.findViewById(R.id.btnAjouter);
-        configurerListe(view);
-
+        this.listeElementView = view.findViewById(R.id.lstElementConfig);
+        configurerListe();
     }
 
-    private void configurerListe(View view) {
-        this.listeElementView = view.findViewById(R.id.lstElementConfig);
+    public void configurerListe() {
         ArrayList<Persistable> listeElements;
         if (this.titre.equals(activity.getResources().getString(R.string.points_am_liorer))){
             listeElements = (ArrayList<Persistable>) (Object) activity.getPoints();
