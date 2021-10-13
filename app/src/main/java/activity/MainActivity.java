@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import data.DbAdapter;
 import fragment.ConfigFragment;
@@ -53,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         setWidgets();
         dbAdapter = new DbAdapter(MainActivity.this);
         dbAdapter.ouvrirBd();
-        this.parties = (ArrayList<Partie>) (Object) dbAdapter.fetchAllPersistable(new Partie());
-        this.scores = (ArrayList<Score>) (Object) dbAdapter.fetchAllPersistable(new Score());
+        refreshParties();
+        refreshScores();
         this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
         this.points = (ArrayList<Point>) (Object) dbAdapter.fetchAllPersistable(new Point());
         dbAdapter.fermerBd();
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(firstRun){
-            alertDialogue(getString(R.string.bienvenu_message));
+            alertDialogueMessageBienvenu(getString(R.string.bienvenu_message));
             tabLayout.getTabAt(2).select();
         }else{
             remplacerFragment(new PartieFragment());
@@ -88,7 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void alertDialogue(String message) {
+    private void refreshScores() {
+        this.scores = (ArrayList<Score>) (Object) dbAdapter.fetchAllPersistable(new Score());
+    }
+
+    private void alertDialogueMessageBienvenu(String message) {
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogLayout = inflater.inflate(R.layout.message_bienvenu,null);
@@ -251,31 +254,83 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void modifierPoint(Point ancienPoint,String nouveauNom){
+        Point nouveauPoint = new Point(nouveauNom);
         for (Point point : this.points){
             if (point.getNom().equals(ancienPoint.getNom())){
                 point.setNom(nouveauNom);
             }
         }
         dbAdapter.ouvrirBd();
-        dbAdapter.updatePoint(ancienPoint,new Point(nouveauNom));
+        dbAdapter.updatePoint(ancienPoint,nouveauPoint);
+        dbAdapter.updateParties(ancienPoint, nouveauPoint);
+        refreshParties();
         dbAdapter.fermerBd();
+
         retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
     }
 
     public void modifierJoueur(Joueur ancienJoueur,String nouveauNom){
+        Joueur nouveauJoueur = new Joueur(nouveauNom);
         for (Joueur joueur : this.joueurs){
             if (joueur.getNom().equals(ancienJoueur.getNom())){
                 joueur.setNom(nouveauNom);
             }
         }
         dbAdapter.ouvrirBd();
-        dbAdapter.updateJoueur(ancienJoueur,new Joueur(nouveauNom));
+        dbAdapter.updateJoueur(ancienJoueur,nouveauJoueur);
+        dbAdapter.updateScores(ancienJoueur, nouveauJoueur);
+        refreshScores();
         dbAdapter.fermerBd();
+
         retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.joueurs)));
     }
 
     private void retourElementConfig(Fragment fragment) {
         ConfigFragment configFragment = (ConfigFragment) this.fragment;
         configFragment.remplacerFragment(fragment);
+    }
+
+    public void effacerJoueur(String nomElement) {
+        Joueur joueur;
+        Boolean trouve = false;
+        for(int i = 0;i < this.joueurs.size() && !trouve ;i++){
+            joueur = this.joueurs.get(i);
+            if(joueur.getNom().equals(nomElement)){
+                joueurs.remove(i);
+                trouve = true;
+            }
+        }
+        Joueur joueurAEffacer = new Joueur(nomElement);
+        dbAdapter.ouvrirBd();
+        dbAdapter.deleteJoueur(joueurAEffacer);
+        dbAdapter.deleteJoueurScores(joueurAEffacer);
+        refreshScores();
+        dbAdapter.fermerBd();
+
+        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.joueurs)));
+
+    }
+
+    public void effacerPoint(String nomElement) {
+        Point point;
+        Boolean trouve = false;
+        for(int i = 0;i < this.points.size() && !trouve ;i++){
+            point = this.points.get(i);
+            if(point.getNom().equals(nomElement)){
+                points.remove(i);
+                trouve = true;
+            }
+        }
+        Point pointAEffacer = new Point(nomElement);
+        dbAdapter.ouvrirBd();
+        dbAdapter.deletePoint(pointAEffacer);
+        dbAdapter.deletePartiesPoint(pointAEffacer);
+        refreshParties();
+        dbAdapter.fermerBd();
+        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
+    }
+
+    private void refreshParties() {
+        this.parties = (ArrayList<Partie>) (Object) dbAdapter.fetchAllPersistable(new Partie());
     }
 }

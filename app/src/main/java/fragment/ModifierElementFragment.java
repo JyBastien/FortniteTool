@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.fortnitetool.R;
 
@@ -115,17 +116,46 @@ public class ModifierElementFragment extends Fragment {
     private void dialogueConfirmation() {
         AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
         confirmDeleteDialog.setTitle("Effacer");
-        confirmDeleteDialog.setMessage("Voulez-vous vraiment effacer " + nomElement + "?");
+        confirmDeleteDialog.setMessage("Voulez-vous vraiment effacer " + nomElement + "?\nVous effacerez toutes les données associés également");
         confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (type.equals(getResources().getString(R.string.points_am_liorer))) {
-                    //activity.effacerPoint(nomElement);
+                    if(activity.getPoints().size()>1) {
+                        activity.effacerPoint(nomElement);
+                    }else{
+                        alertDialogueMessage("Impossible d'effacer le dernier " + getResources().getString(R.string.point_am_liorer));
+                    }
                 } else {
-                    //activity.effacerJoueur(nomElement);
+                    if(activity.getJoueurs().size()>1) {
+                        activity.effacerJoueur(nomElement);
+                    }else{
+                        alertDialogueMessage("Impossible d'effacer le dernier " + getResources().getString(R.string.joueur));
+                    }
                 }
+                dialogInterface.dismiss();
             }
         });
+        confirmDeleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        confirmDeleteDialog.show();
+    }
+
+    private void alertDialogueMessage(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        builder.setTitle("Erreur");
+        builder.setMessage(message);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
     }
 
     private void setValues() {

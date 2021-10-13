@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import fragment.ConfigFragment;
 import modele.Joueur;
 import modele.Point;
 import modele.Score;
@@ -72,5 +73,33 @@ public class DbAdapter {
     }
     public long updatePoint(Point ancienPoint, Point nouveauPoint) {
         return db.update(ancienPoint.getTableName(),nouveauPoint.getContentValues(),  DataAccess.COL_NOM_POINT + " = ?",new String[]{ancienPoint.getNom()});
+    }
+
+    public void deleteJoueur(Joueur joueur) {
+        db.delete(joueur.getTableName(),DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{joueur.getNom()});
+    }
+
+    public void deletePoint(Point point) {
+        db.delete(point.getTableName(),DataAccess.COL_NOM_POINT + " = ?",new String[]{point.getNom()});
+    }
+
+    public void updateParties(Point ancienPoint, Point nouveauPoint) {
+        ContentValues cv = new ContentValues();
+        cv.put(DataAccess.COL_POINT,nouveauPoint.getNom());
+        db.update(DataAccess.TABLE_GAME,cv,DataAccess.COL_POINT + " = ?",new String[]{ancienPoint.getNom()});
+    }
+
+    public void updateScores(Joueur ancienJoueur, Joueur nouveauJoueur) {
+        ContentValues cv = new ContentValues();
+        cv.put(DataAccess.COL_NOM_JOUEUR,nouveauJoueur.getNom());
+        db.update(DataAccess.TABLE_SCORE,cv,DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{ancienJoueur.getNom()});
+    }
+
+    public void deleteJoueurScores(Joueur joueurAEffacer) {
+        db.delete(DataAccess.TABLE_SCORE,DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{joueurAEffacer.getNom()});
+    }
+
+    public void deletePartiesPoint(Point pointAEffacer) {
+        db.delete(DataAccess.TABLE_GAME,DataAccess.COL_POINT + " = ?",new String[]{pointAEffacer.getNom()});
     }
 }
