@@ -67,10 +67,10 @@ public class DbAdapter {
     }
 
 
-    public void updateJoueur(Joueur joueur, String nouveauNom) {
-        db.update(joueur.getTableName(),joueur.getContentValues(),DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{joueur.getNom()});
+    public long updateJoueur(Joueur ancienJoueur, Joueur nouveauJoueur) {
+        return db.update(ancienJoueur.getTableName(),nouveauJoueur.getContentValues(),DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{ancienJoueur.getNom()});
     }
-    public void updatePoint(Point point, String nouveauNom) {
-        db.update(point.getTableName(),point.getContentValues(),  DataAccess.COL_NOM_POINT + " = ?",new String[]{point.getNom()});
+    public long updatePoint(Point ancienPoint, Point nouveauPoint) {
+        return db.update(ancienPoint.getTableName(),nouveauPoint.getContentValues(),  DataAccess.COL_NOM_POINT + " = ?",new String[]{ancienPoint.getNom()});
     }
 }

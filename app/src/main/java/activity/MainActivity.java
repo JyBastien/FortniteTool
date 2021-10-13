@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import data.DbAdapter;
 import fragment.ConfigFragment;
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         dbAdapter.ouvrirBd();
-        dbAdapter.updatePoint(ancienPoint,nouveauNom);
+        dbAdapter.updatePoint(ancienPoint,new Point(nouveauNom));
         dbAdapter.fermerBd();
         retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
     }
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         dbAdapter.ouvrirBd();
-        dbAdapter.updateJoueur(ancienJoueur,nouveauNom);
+        dbAdapter.updateJoueur(ancienJoueur,new Joueur(nouveauNom));
         dbAdapter.fermerBd();
         retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.joueurs)));
     }

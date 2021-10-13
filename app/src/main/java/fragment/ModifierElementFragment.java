@@ -1,7 +1,9 @@
 package fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -99,6 +101,28 @@ public class ModifierElementFragment extends Fragment {
                         Joueur ancienJoueur = new Joueur(nomElement);
                         activity.modifierJoueur(ancienJoueur, nouveauNom);
                     }
+                }
+            }
+        });
+        btnEffacer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogueConfirmation();
+            }
+        });
+    }
+
+    private void dialogueConfirmation() {
+        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
+        confirmDeleteDialog.setTitle("Effacer");
+        confirmDeleteDialog.setMessage("Voulez-vous vraiment effacer " + nomElement + "?");
+        confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (type.equals(getResources().getString(R.string.points_am_liorer))) {
+                    //activity.effacerPoint(nomElement);
+                } else {
+                    //activity.effacerJoueur(nomElement);
                 }
             }
         });
