@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.example.fortnitetool.R;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 import fragment.ConfigFragment;
 import modele.Joueur;
+import modele.Partie;
 import modele.Point;
 import modele.Score;
 import utils.Persistable;
@@ -106,5 +108,13 @@ public class DbAdapter {
     public void clearData() {
         db.delete(DataAccess.TABLE_GAME,null,null);
         db.delete(DataAccess.TABLE_SCORE,null,null);
+    }
+
+    public void deletePartie(Partie partie) {
+        db.delete(DataAccess.TABLE_GAME,DataAccess.COL_DATE + " = ?",new String[]{partie.getTemps().toString()});
+    }
+
+    public void deleteScore(Score score) {
+        db.delete(DataAccess.TABLE_SCORE,DataAccess.COL_DATE + " = ?",new String[]{score.getTemps().toString()});
     }
 }

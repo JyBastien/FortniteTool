@@ -341,4 +341,20 @@ public class MainActivity extends AppCompatActivity {
         refreshParties();
         dbAdapter.fermerBd();
     }
+
+    public void effacerPartie(Partie partie) {
+        this.parties.remove(partie);
+        dbAdapter.ouvrirBd();
+        dbAdapter.deletePartie(partie);
+        refreshParties();
+        dbAdapter.fermerBd();
+    }
+
+    public void effacerScore(Score score) {
+        this.scores.remove(score);
+        dbAdapter.ouvrirBd();
+        dbAdapter.deleteScore(score);
+        refreshParties();
+        dbAdapter.fermerBd();
+    }
 }
