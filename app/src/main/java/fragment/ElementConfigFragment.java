@@ -33,6 +33,7 @@ public class ElementConfigFragment extends Fragment {
     private View view;
     private ListView listeElementView;
     private Button btnAjouter;
+    private Button btnClearData;
 
 
     public ElementConfigFragment(String titre) {
@@ -80,6 +81,32 @@ public class ElementConfigFragment extends Fragment {
                 alertNouveauElement(view);
             }
         });
+        btnClearData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogueConfirmation();
+            }
+        });
+    }
+
+    private void dialogueConfirmation() {
+        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
+        confirmDeleteDialog.setTitle("Effacer");
+        confirmDeleteDialog.setMessage("Voulez-vous vraiment Effacer toutes les Données Statistiques? Cette opération est Irréversible");
+        confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                activity.clearData();
+                dialogInterface.dismiss();
+            }
+        });
+        confirmDeleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        confirmDeleteDialog.show();
     }
 
     private void alertNouveauElement(View view) {
@@ -115,6 +142,7 @@ public class ElementConfigFragment extends Fragment {
         this.txtTitre = view.findViewById(R.id.txtTitreConfig);
         txtTitre.setText(this.titre);
         btnAjouter = view.findViewById(R.id.btnAjouter);
+        btnClearData = view.findViewById(R.id.btnClear);
         this.listeElementView = view.findViewById(R.id.lstElementConfig);
         configurerListe();
     }

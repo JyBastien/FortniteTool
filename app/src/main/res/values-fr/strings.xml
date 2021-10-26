@@ -17,4 +17,8 @@
     <string name="points_am_liorer">Points à améliorer</string>
     <string name="joueurs">Joueurs</string>
     <string name="ramp_up">Analyse Ramp-Up</string>
+    <string name="clear_data">Effacer Données</string>
+    <string name="ajouterNouveau">Ajouter un nouveau\ </string>
+    <string name="bienvenu_message">Bienvenu à l\'Analyse Ramp-up qui traque les points à améliorée d\'un processus et qui affiche ensuite les statistiques. Vous pouvez aussi entrez un score à un participant et observer son évolution. Ajoutez des Points à Améliorer et Participants dans l\'onglet Config avant de commencer!</string>
+
 </resources>

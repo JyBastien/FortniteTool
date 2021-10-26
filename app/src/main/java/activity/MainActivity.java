@@ -333,4 +333,12 @@ public class MainActivity extends AppCompatActivity {
     private void refreshParties() {
         this.parties = (ArrayList<Partie>) (Object) dbAdapter.fetchAllPersistable(new Partie());
     }
+
+    public void clearData() {
+        dbAdapter.ouvrirBd();
+        dbAdapter.clearData();
+        refreshScores();
+        refreshParties();
+        dbAdapter.fermerBd();
+    }
 }

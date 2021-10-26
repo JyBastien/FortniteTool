@@ -102,4 +102,9 @@ public class DbAdapter {
     public void deletePartiesPoint(Point pointAEffacer) {
         db.delete(DataAccess.TABLE_GAME,DataAccess.COL_POINT + " = ?",new String[]{pointAEffacer.getNom()});
     }
+
+    public void clearData() {
+        db.delete(DataAccess.TABLE_GAME,null,null);
+        db.delete(DataAccess.TABLE_SCORE,null,null);
+    }
 }
