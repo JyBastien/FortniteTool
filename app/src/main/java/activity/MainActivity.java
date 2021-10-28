@@ -1,5 +1,7 @@
 package activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,10 +30,19 @@ import modele.Joueur;
 import modele.Partie;
 import modele.Point;
 import modele.Score;
+import modele.Stats;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private DbAdapter dbAdapter;
@@ -48,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_main);
         setWidgets();
         dbAdapter = new DbAdapter(MainActivity.this);
@@ -56,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         refreshScores();
         this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
         this.points = (ArrayList<Point>) (Object) dbAdapter.fetchAllPersistable(new Point());
+        //statsBuilder();
         dbAdapter.fermerBd();
 
         boolean firstRun = false;
@@ -83,8 +99,22 @@ public class MainActivity extends AppCompatActivity {
         }else{
             remplacerFragment(new PartieFragment());
         }
+    }
 
-
+    private void statsBuilder() {
+        dbAdapter.ouvrirBd();
+        Partie partie;
+        Random random = new Random();
+        Timestamp timestamp;
+        LocalDate localDate;
+        Date date;
+        for (int i = 0; i < 250; i++ ){
+            localDate = LocalDate.of(2021, random.nextInt(12) + 1,random.nextInt(27) + 1);
+            date = Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            partie = new Partie(new Timestamp(date.getTime()),this.points.get(random.nextInt(this.points.size())).getNom());
+            dbAdapter.insertPersistable(partie);
+        }
+        dbAdapter.fermerBd();
     }
 
     private void refreshScores() {
@@ -106,9 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setCustomTitle(titre);
 
-
-
-
         // Set up the input
         //final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -119,9 +146,6 @@ public class MainActivity extends AppCompatActivity {
         txtMessage.setGravity(Gravity.CENTER);
         txtMessage.setTextSize(20);
         builder.setView(dialogLayout);
-
-        ;
-
 
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -331,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshParties() {
-        this.parties = (ArrayList<Partie>) (Object) dbAdapter.fetchAllPersistable(new Partie());
+        this.parties = dbAdapter.fetchAllPartieParDate();
     }
 
     public void clearData() {
@@ -356,5 +380,81 @@ public class MainActivity extends AppCompatActivity {
         dbAdapter.deleteScore(score);
         refreshParties();
         dbAdapter.fermerBd();
+    }
+
+    public ArrayList<Stats> getStatsGrouperJour() {
+        ArrayList<Stats> stats = new ArrayList<>();
+        HashMap<String,Integer> statsBuilder = new HashMap<>();
+        boolean lireDateDebut = true;
+        LocalDate dateDebut = null;
+        LocalDate dateFin = null;
+        LocalDate date;
+        String pointAmeliorer;
+        dbAdapter.ouvrirBd();
+        ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate();
+        dbAdapter.fermerBd();
+        Partie partie;
+        int qte = 0;
+        for (int i = 0; i < partiesOrderedParJour.size() && stats.size() < 5; i++)
+     {
+            partie = partiesOrderedParJour.get(i);
+            date = Instant.ofEpochMilli(partie.getTemps().getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+            if(lireDateDebut){
+                dateFin = date;
+                dateDebut = date.minusDays(1);
+
+                //Pour commencer avec le premier du mois
+                //dateFin = dateDebut.withDayOfMonth(1);
+                //pour commencer a la semaine
+                //dateDebut = date.with(DayOfWeek.MONDAY);
+                //dateFin = dateDebut.plusDays(7);
+                lireDateDebut = false;
+            }
+            //stats building
+            pointAmeliorer = partie.getPointAmeliorer();
+            if (statsBuilder.containsKey(pointAmeliorer)){
+                qte = statsBuilder.get(partie.getPointAmeliorer()) + 1;
+            } else {
+                qte = 1;
+            }
+            if (date.isEqual(dateDebut) || date.isBefore(dateDebut)) {
+                //on compile les resultats et cré le stat
+                Stats stat = getStats(statsBuilder, dateDebut, dateFin);
+                stats.add(stat);
+                //date de debut de la prochaine statistique
+                dateDebut = date.minusDays(1);
+                dateFin = date;
+                statsBuilder = new HashMap<>();
+            }
+            statsBuilder.put(pointAmeliorer, qte);
+        }
+        if (statsBuilder.size() > 0){
+            Stats stat = getStats(statsBuilder, dateDebut, dateFin);
+            stats.add(stat);
+        }
+        return stats;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @NonNull
+    private Stats getStats(HashMap<String, Integer> statsBuilder, LocalDate dateDebut, LocalDate dateFin) {
+        int highScore = 0;
+        String pointHighScore = null;
+        int qteTotal = 0;
+        double ratio;
+
+        for (Map.Entry<String,Integer> resultat : statsBuilder.entrySet()){
+            if (resultat.getValue() > highScore ){
+                highScore = resultat.getValue();
+                pointHighScore = resultat.getKey();
+            }
+            qteTotal += resultat.getValue();
+        }
+        Stats stat = null;
+        if (qteTotal > 0) {
+            ratio = ((double) highScore) / qteTotal;
+            stat = new Stats(7, pointHighScore, ratio, dateDebut, dateFin, statsBuilder,qteTotal);
+        }
+        return stat;
     }
 }

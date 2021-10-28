@@ -18,6 +18,7 @@ import modele.Joueur;
 import modele.Partie;
 import modele.Point;
 import modele.Score;
+import modele.Stats;
 import utils.Persistable;
 import utils.TimestampParser;
 
@@ -51,7 +52,6 @@ public class DbAdapter {
         Cursor cursor = db.query(entity.getTableName(),entity.getColonnes(),null,null,null,null,null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
-
             try {
                 entity = entity.factoryFromCursor(cursor);
                 entities.add(entity);
@@ -59,11 +59,30 @@ public class DbAdapter {
                 Toast.makeText(context, R.string.DateIncorrecte, Toast.LENGTH_SHORT).show();
             }
             cursor.moveToNext();
-
         }
         cursor.close();
         return entities;
     }
+
+    public ArrayList<Partie> fetchAllPartieParDate(){
+        Partie partie = new Partie();
+        ArrayList<Partie> parties = new ArrayList<>(0);
+        String[] colonnes = partie.getColonnes();
+        Cursor cursor = db.query(partie.getTableName(),colonnes,null,null,null,null,"date(" + DataAccess.COL_DATE + ") desc");
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            try {
+                partie = (Partie) partie.factoryFromCursor(cursor);
+                parties.add(partie);
+            } catch (ParseException e) {
+                Toast.makeText(context, R.string.DateIncorrecte, Toast.LENGTH_SHORT).show();
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return parties;
+    }
+
 
     public Boolean getBoolean(){
         return null;
@@ -117,4 +136,5 @@ public class DbAdapter {
     public void deleteScore(Score score) {
         db.delete(DataAccess.TABLE_SCORE,DataAccess.COL_DATE + " = ?",new String[]{score.getTemps().toString()});
     }
+
 }
