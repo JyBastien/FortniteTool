@@ -5,6 +5,9 @@ import android.database.Cursor;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import data.DataAccess;
 import utils.Persistable;
@@ -70,5 +73,9 @@ public class Partie implements Persistable {
     @Override
     public String toString() {
         return pointAmeliorer;
+    }
+
+    public LocalDate getDate() {
+        return Instant.ofEpochMilli(temps.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }

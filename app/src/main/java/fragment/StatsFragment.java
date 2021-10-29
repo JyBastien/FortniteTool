@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.SortedList;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -193,8 +192,8 @@ public class StatsFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void showBArChartParJour(View view) {
-        ArrayList<Stats> stats = mainActivity.getStatsGrouperJour();
+    private void showStatsInBarChart(String description, ArrayList<Stats> stats) {
+
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         ArrayList<String> points = new ArrayList<>();
         String nomPoint;
@@ -203,7 +202,6 @@ public class StatsFragment extends Fragment {
             nomPoint = stats.get(i).getNomPoint();
             nomPoint = nomPoint.length() > 6 ? nomPoint.substring(0, 6) : nomPoint;
             points.add(nomPoint);
-            Toast.makeText(view.getContext(), String.valueOf(stats.size()), Toast.LENGTH_SHORT).show();
         }
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "%");
@@ -211,7 +209,7 @@ public class StatsFragment extends Fragment {
 
         BarData theData = new BarData(barDataSet);//----Line of error
 
-        setCharDescription("Ratio des Points Par Jour");
+        setCharDescription(description);
         chart.setData(theData);
         setChartAttributes();
     }
@@ -322,11 +320,14 @@ public class StatsFragment extends Fragment {
                         break;
                     }
                     case 1: {
-                        showBArChartParJour(view);
+                        ArrayList<Stats> stats = mainActivity.getStatsGrouperJour();
+                        showStatsInBarChart("Ratio des Points Par Jour",stats);
                         break;
                     }
                     case 2: {
-
+                        showBarChartParSemaine();
+                        ArrayList<Stats> stats = mainActivity.getStatsGrouperSemaine();
+                        showStatsInBarChart("Ratio des Points Par Semaine",stats);
                         break;
                     }
                 }
@@ -364,6 +365,9 @@ public class StatsFragment extends Fragment {
 //                return false;
 //            }
 //        });
+    }
+
+    private void showBarChartParSemaine() {
     }
 
     private void dialogueConfirmation(Partie partie) {

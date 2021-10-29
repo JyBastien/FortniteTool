@@ -381,80 +381,20 @@ public class MainActivity extends AppCompatActivity {
         refreshParties();
         dbAdapter.fermerBd();
     }
-
     public ArrayList<Stats> getStatsGrouperJour() {
-        ArrayList<Stats> stats = new ArrayList<>();
-        HashMap<String,Integer> statsBuilder = new HashMap<>();
-        boolean lireDateDebut = true;
-        LocalDate dateDebut = null;
-        LocalDate dateFin = null;
-        LocalDate date;
-        String pointAmeliorer;
         dbAdapter.ouvrirBd();
         ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate();
         dbAdapter.fermerBd();
-        Partie partie;
-        int qte = 0;
-        for (int i = 0; i < partiesOrderedParJour.size() && stats.size() < 5; i++)
-     {
-            partie = partiesOrderedParJour.get(i);
-            date = Instant.ofEpochMilli(partie.getTemps().getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-            if(lireDateDebut){
-                dateFin = date;
-                dateDebut = date.minusDays(1);
-
-                //Pour commencer avec le premier du mois
-                //dateFin = dateDebut.withDayOfMonth(1);
-                //pour commencer a la semaine
-                //dateDebut = date.with(DayOfWeek.MONDAY);
-                //dateFin = dateDebut.plusDays(7);
-                lireDateDebut = false;
-            }
-            //stats building
-            pointAmeliorer = partie.getPointAmeliorer();
-            if (statsBuilder.containsKey(pointAmeliorer)){
-                qte = statsBuilder.get(partie.getPointAmeliorer()) + 1;
-            } else {
-                qte = 1;
-            }
-            if (date.isEqual(dateDebut) || date.isBefore(dateDebut)) {
-                //on compile les resultats et cré le stat
-                Stats stat = getStats(statsBuilder, dateDebut, dateFin);
-                stats.add(stat);
-                //date de debut de la prochaine statistique
-                dateDebut = date.minusDays(1);
-                dateFin = date;
-                statsBuilder = new HashMap<>();
-            }
-            statsBuilder.put(pointAmeliorer, qte);
-        }
-        if (statsBuilder.size() > 0){
-            Stats stat = getStats(statsBuilder, dateDebut, dateFin);
-            stats.add(stat);
-        }
+        ArrayList<Stats> stats = Stats.getStatsParJour(partiesOrderedParJour);
         return stats;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @NonNull
-    private Stats getStats(HashMap<String, Integer> statsBuilder, LocalDate dateDebut, LocalDate dateFin) {
-        int highScore = 0;
-        String pointHighScore = null;
-        int qteTotal = 0;
-        double ratio;
 
-        for (Map.Entry<String,Integer> resultat : statsBuilder.entrySet()){
-            if (resultat.getValue() > highScore ){
-                highScore = resultat.getValue();
-                pointHighScore = resultat.getKey();
-            }
-            qteTotal += resultat.getValue();
-        }
-        Stats stat = null;
-        if (qteTotal > 0) {
-            ratio = ((double) highScore) / qteTotal;
-            stat = new Stats(7, pointHighScore, ratio, dateDebut, dateFin, statsBuilder,qteTotal);
-        }
-        return stat;
+    public ArrayList<Stats> getStatsGrouperSemaine() {
+        dbAdapter.ouvrirBd();
+        ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate();
+        dbAdapter.fermerBd();
+        ArrayList<Stats> stats = Stats.getStatsParSemaine(partiesOrderedParJour);
+        return stats;
     }
 }
