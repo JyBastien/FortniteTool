@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +115,7 @@ public class StatsFragment extends Fragment {
 
         //monter la liste des parties enregistrées
         listeParties = view.findViewById(R.id.lstParties);
+        listeParties.setNestedScrollingEnabled(true);
         ArrayAdapter<String> adapteur;
 
         //attacher la liste de joueur
@@ -149,8 +151,6 @@ public class StatsFragment extends Fragment {
         setCharDescription("Palmares des Points");
         setChartAttributes();
     }
-
-
 
 
 
@@ -206,8 +206,8 @@ public class StatsFragment extends Fragment {
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "%");
         chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(points));
-
-        BarData theData = new BarData(barDataSet);//----Line of error
+        chart.getXAxis().setLabelCount(points.size(),points.size() == 1);
+        BarData theData = new BarData(barDataSet);
 
         setCharDescription(description);
         chart.setData(theData);

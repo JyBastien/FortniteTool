@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DataAccess extends SQLiteOpenHelper {
-    public final static String BD_NOM = "FortniteTool8";
+    public final static String BD_NOM = "FortniteTool7";
 
     public final static String TABLE_GAME = "Game";
     public final static String COL_ID = "_id";

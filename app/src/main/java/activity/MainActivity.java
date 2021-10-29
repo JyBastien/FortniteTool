@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -397,4 +398,5 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Stats> stats = Stats.getStatsParSemaine(partiesOrderedParJour);
         return stats;
     }
+
 }

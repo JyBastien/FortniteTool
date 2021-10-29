@@ -88,6 +88,7 @@ public class Stats {
         Partie partie = partiesOrderedParJour.get(0);
         LocalDate date = partie.getDate();
         LocalDate dateDebut = date.with(DayOfWeek.MONDAY);
+        dateDebut = dateDebut.isEqual(date)? dateDebut.minusDays(7):dateDebut;
         ArrayList<Stats> stats =  getStatsParInterval(partiesOrderedParJour, dateDebut, 7);
         //Pour commencer avec le premier du mois
         //dateFin = dateDebut.withDayOfMonth(1);
@@ -118,7 +119,7 @@ public class Stats {
                 qte = 1;
             }
             //si la deta depasse la periode observée
-            if (date.isBefore(dateDebut)) {
+            if (date.isBefore(dateDebut) || date.isEqual(dateDebut)) {
                 //on compile les resultats et cré le stat
                 Stats stat = getStats(statsBuilder, dateDebut, dateFin);
                 stats.add(stat);

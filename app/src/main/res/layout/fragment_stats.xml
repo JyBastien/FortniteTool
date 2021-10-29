@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,6 +14,11 @@
             android:id="@+id/textView15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="372dp" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayoutGraphs"
@@ -36,11 +41,6 @@
                 android:text="Semaine" />
         </com.google.android.material.tabs.TabLayout>
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart"
-            android:layout_width="match_parent"
-            android:layout_height="372dp" />
-
         <TextView
             android:id="@+id/textView7"
             android:layout_width="match_parent"
@@ -54,12 +54,12 @@
         <ListView
             android:id="@+id/lstParties"
             android:layout_width="match_parent"
-            android:layout_height="194dp" />
+            android:layout_height="337dp" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerViewElementConfig"
             android:layout_width="match_parent"
-            android:layout_height="658dp" />
+            android:layout_height="wrap_content" />
 
 
         <!--
@@ -93,4 +93,4 @@
                    android:background="#03A9F4"
                    android:backgroundTint="#3F51B5" />   -->
     </LinearLayout>
-</FrameLayout>
+</androidx.core.widget.NestedScrollView>
