@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FortniteTool</string>
+    <string name="app_name">Analyse Ramp-Up</string>
     <string name="partie">Partie</string>
     <string name="stats">Stats</string>
     <string name="point_am_liorer">Point à Améliorer</string>
@@ -19,6 +19,22 @@
     <string name="ramp_up">Analyse Ramp-Up</string>
     <string name="clear_data">Effacer Données</string>
     <string name="ajouterNouveau">Ajouter un nouveau\ </string>
-    <string name="bienvenu_message">Bienvenu à l\'Analyse Ramp-up qui traque les points à améliorée d\'un processus et qui affiche ensuite les statistiques. Vous pouvez aussi entrez un score à un participant et observer son évolution. Ajoutez des Points à Améliorer et Participants dans l\'onglet Config avant de commencer!</string>
-
+    <string name="bienvenu_message">Bienvenu à l\'Analyse Ramp-up qui traque les points à améliorée d\'un processus et qui affiche ensuite les statistiques. Ajoutez des Points à Améliorer dans l\'onglet Config avant de commencer!</string>
+    <string name="ok">OK</string>
+    <string name="effacer">Effacer</string>
+    <string name="effacerStatistiques">Voulez-vous vraiment Effacer toutes les Données Statistiques? Cette opération est Irréversible</string>
+    <string name="cancel">Cancel</string>
+    <string name="vraimentEffacer">\"Voulez-vous vraiment effacer \"</string>
+    <string name="effacerAssocieEgalement">\? \nVous effacerez toutes les données associés également!</string>
+    <string name="impossibleEffacerDernier">Impossible d\'effacer le dernier </string>
+    <string name="erreur">Erreur</string>
+    <string name="occurencesDes">Occurance des  </string>
+    <string name="ratioDerniersJours">Point Le Plus Récurents des Derniers Jours </string>
+    <string name="rationPointsSemaine">Point Le Plus Récurents des Dernières Semaines </string>
+    <string name="voulezEffacerPartie">Voulez-vous vraiment Effacer la partie ayant eu lieu le </string>
+    <string name="jour">Jour </string>
+    <string name="ajouter">Ajouter</string>
+    <string name="global">Global</string>
+    <string name="semaine">Semaine</string>
+    <string name="liste_parties">Liste Parties</string>
 </resources>

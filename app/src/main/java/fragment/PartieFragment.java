@@ -79,7 +79,7 @@ public class PartieFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_partie, container, false);
         MainActivity activity = (MainActivity) getActivity();
-        nomJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object)activity.getJoueurs());
+       // nomJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object)activity.getJoueurs());
         pointsAmeliorer = Persistable.toArrayString((ArrayList<Persistable>) (Object)activity.getPoints());
         setWidgets(view);
         setListeners();
@@ -98,21 +98,6 @@ public class PartieFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 pointAmeliorer = cmbRaison.getSelectedItem().toString();
             }});
-        cmbJoueur.setOnItemSelectedListener(new AbstractOnItemListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                nomjoueur = cmbJoueur.getSelectedItem().toString();
-            }
-        });
-        txtScore.addTextChangedListener(new AbstractTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                try {
-                    points = Integer.parseInt(txtScore.getText().toString());
-                } catch (Exception e) {
-                }
-            }
-        });
     }
     private void enregistrerFormulaire() {
         int reponse = Validateur.verifierFormulaire(this);
@@ -143,17 +128,13 @@ public class PartieFragment extends Fragment {
     }
     private void setWidgets(View view) {
         cmbRaison = (Spinner) view.findViewById(R.id.cmbRaisons);
-        cmbJoueur = (Spinner) view.findViewById(R.id.cmbJoueur);
         btnEnregistrer = view.findViewById(R.id.btnEnregistrer);
-        txtScore = view.findViewById(R.id.txtScore);
 
         //2. Adapter
         ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(), R.layout.itemliste, pointsAmeliorer);
-        ArrayAdapter<String> adapteurJoueur = new ArrayAdapter<String>(this.getActivity(), R.layout.itemliste, nomJoueurs);
 
         //3. Ler l'adapter avec lsiting
         cmbRaison.setAdapter(adapteurRaison);
-        cmbJoueur.setAdapter(adapteurJoueur);
     }
 
     public String getPointAmeliorer() {

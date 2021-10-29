@@ -28,17 +28,17 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Global" />
+                android:text="@string/global" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Jour" />
+                android:text="@string/jour" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Semaine" />
+                android:text="@string/semaine" />
         </com.google.android.material.tabs.TabLayout>
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="18dp"
-            android:text="Liste Parties"
+            android:text="@string/liste_parties"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold" />

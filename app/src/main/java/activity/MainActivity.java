@@ -69,21 +69,21 @@ public class MainActivity extends AppCompatActivity {
         dbAdapter = new DbAdapter(MainActivity.this);
         dbAdapter.ouvrirBd();
         refreshParties();
-        refreshScores();
-        this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
+        //refreshScores();
+        //this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
         this.points = (ArrayList<Point>) (Object) dbAdapter.fetchAllPersistable(new Point());
         //statsBuilder();
         dbAdapter.fermerBd();
 
         boolean firstRun = false;
-        if(joueurs.size()==0){
-            Joueur joueur = new Joueur(this.getResources().getString(R.string.joueur));
-            joueurs.add(joueur);
-            dbAdapter.ouvrirBd();
-            dbAdapter.insertPersistable(joueur);
-            dbAdapter.fermerBd();
-            firstRun = true;
-        }
+//        if(joueurs.size()==0){
+//            Joueur joueur = new Joueur(this.getResources().getString(R.string.joueur));
+//            joueurs.add(joueur);
+//            dbAdapter.ouvrirBd();
+//            dbAdapter.insertPersistable(joueur);
+//            dbAdapter.fermerBd();
+//            firstRun = true;
+//        }
 
         if(points.size() == 0){
             Point point = new Point(this.getResources().getString(R.string.point));
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(dialogLayout);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
         TextView txtMessage = (TextView) dialog.findViewById(R.id.txtMessage);
         txtMessage.setText(message);
         dialog.show();
-
     }
 
 
@@ -196,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case 2: {
-                        fragment = new ConfigFragment();
+                        fragment = new ElementConfigFragment(getResources().getString(R.string.points_am_liorer));
                         break;
                     }
                 }
@@ -216,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void remplacerFragment(Fragment fragment) {
+    public void remplacerFragment(Fragment fragment) {
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainerViewMainActivity, fragment);

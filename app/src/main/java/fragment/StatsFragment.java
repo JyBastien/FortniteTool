@@ -120,8 +120,8 @@ public class StatsFragment extends Fragment {
 
         //attacher la liste de joueur
         //cmbJoueurs = view.findViewById(R.id.cmbJoueurs);
-        ArrayList<String> listeJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object) mainActivity.getJoueurs());
-        adapteur = new ArrayAdapter<String>(mainActivity, R.layout.support_simple_spinner_dropdown_item, listeJoueurs);
+       // ArrayList<String> listeJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object) mainActivity.getJoueurs());
+      //  adapteur = new ArrayAdapter<String>(mainActivity, R.layout.support_simple_spinner_dropdown_item, listeJoueurs);
 
         //     cmbJoueurs.setAdapter(adapteur);
         //     String nomJoueur = cmbJoueurs.getSelectedItem().toString();
@@ -148,12 +148,9 @@ public class StatsFragment extends Fragment {
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getXAxis().setLabelCount(points.size());
         chart.setData(new BarData(barDataSet));
-        setCharDescription("Palmares des Points");
+        setCharDescription(getString(R.string.occurencesDes) + getString(R.string.points_am_liorer));
         setChartAttributes();
     }
-
-
-
 
     private void remplirObjetsGraphique(ArrayList<Entree> entrees, ArrayList<BarEntry> barEntries, ArrayList<String> points, int qteTotal) {
         String texte;
@@ -234,62 +231,6 @@ public class StatsFragment extends Fragment {
         chart.setDescription(description);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private BarDataSet getDataSet(View view) {
-        ArrayList<BarEntry> valeurs1 = new ArrayList();
-        ArrayList<BarEntry> valeurs2 = new ArrayList();
-        int highScore = 0;
-        int qteEntrees = 0;
-        int noJour = 0;
-        BarEntry barEntry = null;
-        BarEntry barEntry2 = null;
-        ArrayList<Stats> statsJour = mainActivity.getStatsGrouperJour();
-        if (statsJour.size() > 0) {
-            for (Stats stats : statsJour) {
-
-                for (Map.Entry<String, Integer> stat : stats.getEntrees().entrySet()) {
-                    if (stat.getValue() > highScore) {
-                        highScore = stat.getValue();
-                    }
-                }
-                for (Map.Entry<String, Integer> stat : stats.getEntrees().entrySet()) {
-                    noJour++;
-                    if (stat.getValue() == highScore && qteEntrees == 0) {
-                        //https://stackoverflow.com/questions/39143069/mpandroidchart-adding-and-display-bar-chart-label
-                        barEntry = new BarEntry(qteEntrees, stat.getValue(), stat.getKey());
-                        qteEntrees++;
-                    } else if (stat.getValue() == highScore && qteEntrees == 1) {
-                        barEntry2 = new BarEntry(qteEntrees, stat.getValue(), stat.getKey());
-                        qteEntrees++;
-                    }
-                }
-                if (qteEntrees == 1) {
-                    int deuxiemeScore = 0;
-                    for (Map.Entry<String, Integer> stat : stats.getEntrees().entrySet()) {
-                        if (stat.getValue() > deuxiemeScore && stat.getValue() < highScore) {
-                            deuxiemeScore = stat.getValue();
-                        }
-                    }
-                    for (Map.Entry<String, Integer> stat : stats.getEntrees().entrySet()) {
-                        if (stat.getValue() == deuxiemeScore && qteEntrees < 2) {
-                            //https://stackoverflow.com/questions/39143069/mpandroidchart-adding-and-display-bar-chart-label
-                            barEntry2 = new BarEntry(qteEntrees, stat.getValue(), stat.getKey());
-                            qteEntrees++;
-                        }
-                    }
-                }
-                valeurs1.add(barEntry);
-                valeurs2.add(barEntry2);
-            }
-            Toast.makeText(view.getContext(), String.valueOf(valeurs1.size()), Toast.LENGTH_SHORT).show();
-            BarDataSet barDataSet1 = new BarDataSet(valeurs1, "Jour " + statsJour.size());
-            BarDataSet barDataSet2 = new BarDataSet(valeurs2, "");
-            return barDataSet1;
-        } else {
-            Toast.makeText(view.getContext(), "Aucune data", Toast.LENGTH_SHORT).show();
-        }
-        return null;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void remplirStatsParties() {
@@ -321,13 +262,13 @@ public class StatsFragment extends Fragment {
                     }
                     case 1: {
                         ArrayList<Stats> stats = mainActivity.getStatsGrouperJour();
-                        showStatsInBarChart("Ratio des Points Par Jour",stats);
+                        showStatsInBarChart(getString(R.string.ratioDerniersJours),stats);
                         break;
                     }
                     case 2: {
                         showBarChartParSemaine();
                         ArrayList<Stats> stats = mainActivity.getStatsGrouperSemaine();
-                        showStatsInBarChart("Ratio des Points Par Semaine",stats);
+                        showStatsInBarChart(getString(R.string.rationPointsSemaine),stats);
                         break;
                     }
                 }
@@ -372,9 +313,9 @@ public class StatsFragment extends Fragment {
 
     private void dialogueConfirmation(Partie partie) {
         AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
-        confirmDeleteDialog.setTitle("Effacer");
-        confirmDeleteDialog.setMessage("Voulez-vous vraiment Effacer la partie ayant eu lieu le " + partie.getTemps().toString().substring(0, partie.getTemps().toString().length() - 7) + "?");
-        confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
+        confirmDeleteDialog.setTitle(R.string.effacer);
+        confirmDeleteDialog.setMessage(getString(R.string.voulezEffacerPartie) + partie.getTemps().toString().substring(0, partie.getTemps().toString().length() - 7) + "?");
+        confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -383,7 +324,7 @@ public class StatsFragment extends Fragment {
                 dialogInterface.dismiss();
             }
         });
-        confirmDeleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        confirmDeleteDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -392,47 +333,47 @@ public class StatsFragment extends Fragment {
         confirmDeleteDialog.show();
     }
 
-    private void dialogueConfirmation(Score score) {
-        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
-        confirmDeleteDialog.setTitle("Effacer");
-        confirmDeleteDialog.setMessage("Voulez-vous vraiment Effacer le score de " + score.getNomJoueur() + " inscrit le " + score.getTemps().toString().substring(0, score.getTemps().toString().length() - 7) + "?");
-        confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                mainActivity.effacerScore(score);
-                String nomJoueur = cmbJoueurs.getSelectedItem().toString();
-                remplirStatsJoueur(nomJoueur);
-                dialogInterface.dismiss();
-            }
-        });
-        confirmDeleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        confirmDeleteDialog.show();
-    }
+//    private void dialogueConfirmation(Score score) {
+//        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
+//        confirmDeleteDialog.setTitle(R.string.effacer);
+//        confirmDeleteDialog.setMessage("Voulez-vous vraiment Effacer le score de " + score.getNomJoueur() + " inscrit le " + score.getTemps().toString().substring(0, score.getTemps().toString().length() - 7) + "?");
+//        confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                mainActivity.effacerScore(score);
+//                String nomJoueur = cmbJoueurs.getSelectedItem().toString();
+//                remplirStatsJoueur(nomJoueur);
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        confirmDeleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        confirmDeleteDialog.show();
+//    }
 
-    private void remplirStatsJoueur(String nomJoueur) {
+//    private void remplirStatsJoueur(String nomJoueur) {
+//
+//        ArrayAdapter<String> adapteur;
+//        ArrayList<String> listeStringFormatScores = scoresArrayStringFactory(nomJoueur);
+//        adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, listeStringFormatScores);
+//        listeScores.setAdapter(adapteur);
+//    }
 
-        ArrayAdapter<String> adapteur;
-        ArrayList<String> listeStringFormatScores = scoresArrayStringFactory(nomJoueur);
-        adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, listeStringFormatScores);
-        listeScores.setAdapter(adapteur);
-    }
-
-    private ArrayList<String> scoresArrayStringFactory(String nomJoueur) {
-        ArrayList<String> scoresString = new ArrayList(0);
-        ArrayList<Score> scores = mainActivity.getScores();
-        for (Score score : scores) {
-            if (score.getNomJoueur().equals(nomJoueur)) {
-                scoresString.add(score.getNomJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.score) + ": " + score.getScore());
-            }
-        }
-
-        return scoresString;
-    }
+//    private ArrayList<String> scoresArrayStringFactory(String nomJoueur) {
+//        ArrayList<String> scoresString = new ArrayList(0);
+//        ArrayList<Score> scores = mainActivity.getScores();
+//        for (Score score : scores) {
+//            if (score.getNomJoueur().equals(nomJoueur)) {
+//                scoresString.add(score.getNomJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.score) + ": " + score.getScore());
+//            }
+//        }
+//
+//        return scoresString;
+//    }
 
     private ArrayList<String> partiesToStringEnLigne(ArrayList<Partie> parties) {
         ArrayList<String> partiesString = new ArrayList(0);
@@ -442,16 +383,16 @@ public class StatsFragment extends Fragment {
         return partiesString;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private ArrayList<String> partiesToStringJour() {
-        ArrayList<String> partiesString = new ArrayList(0);
-        ArrayList<Stats> listeStats = mainActivity.getStatsGrouperJour();
-        int i = 1;
-        for (Stats stats : listeStats) {
-            partiesString.add("Jour " + i++ + " " + stats.getNomPoint() + " :" + stats.getRatio() * 100 + "%");
-        }
-        return partiesString;
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    private ArrayList<String> partiesToStringJour() {
+//        ArrayList<String> partiesString = new ArrayList(0);
+//        ArrayList<Stats> listeStats = mainActivity.getStatsGrouperJour();
+//        int i = 1;
+//        for (Stats stats : listeStats) {
+//            partiesString.add("Jour " + i++ + " " + stats.getNomPoint() + " :" + stats.getRatio() * 100 + "%");
+//        }
+//        return partiesString;
+//    }
 
 
 }

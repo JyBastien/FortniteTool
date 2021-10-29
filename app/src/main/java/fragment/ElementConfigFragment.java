@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -56,7 +55,7 @@ public class ElementConfigFragment extends Fragment {
     }
 
     private void setListeners() {
-        setBtnInsertListener();
+        setBtnListeners();
         setListViewListener();
     }
 
@@ -70,11 +69,11 @@ public class ElementConfigFragment extends Fragment {
     }
 
     private void modifierElement(String nomElement) {
-        ConfigFragment configFragment = (ConfigFragment) activity.getFragment();
-        configFragment.remplacerFragment(new ModifierElementFragment(this.titre, nomElement));
+        //ConfigFragment configFragment = (ConfigFragment) activity.getFragment();
+        activity.remplacerFragment(new ModifierElementFragment(this.titre, nomElement));
     }
 
-    private void setBtnInsertListener() {
+    private void setBtnListeners() {
         btnAjouter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,16 +90,16 @@ public class ElementConfigFragment extends Fragment {
 
     private void dialogueConfirmation() {
         AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
-        confirmDeleteDialog.setTitle("Effacer");
-        confirmDeleteDialog.setMessage("Voulez-vous vraiment Effacer toutes les Données Statistiques? Cette opération est Irréversible");
-        confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
+        confirmDeleteDialog.setTitle(R.string.effacer);
+        confirmDeleteDialog.setMessage(R.string.effacerStatistiques);
+        confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 activity.clearData();
                 dialogInterface.dismiss();
             }
         });
-        confirmDeleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        confirmDeleteDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -116,7 +115,7 @@ public class ElementConfigFragment extends Fragment {
         // Set up the input
         EditText txtReponse = new EditText(view.getContext());
         builder.setView(txtReponse);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String reponse = txtReponse.getText().toString();

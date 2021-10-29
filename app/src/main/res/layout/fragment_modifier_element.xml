@@ -17,7 +17,7 @@
             android:layout_height="50dp"
             android:layout_marginStart="35dp"
             android:layout_marginTop="35dp"
-            android:text="@string/hello_blank_fragment"
+            android:text=""
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="20sp"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="73dp"
             android:layout_marginTop="103dp"
-            android:text="Enregistrer"
+            android:text="@string/enregistrer"
             app:layout_constraintStart_toEndOf="@+id/btnEffacerMods"
             app:layout_constraintTop_toBottomOf="@+id/txtNouveauNomElement" />
 
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="43dp"
             android:layout_marginTop="103dp"
-            android:text="Effacer"
+            android:text="@string/effacer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtNouveauNomElement" />
     </androidx.constraintlayout.widget.ConstraintLayout>

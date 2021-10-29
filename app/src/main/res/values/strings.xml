@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FortniteTool</string>
+    <string name="app_name">Ramp-Up Analyzer</string>
     <string name="partie">Game</string>
     <string name="stats">Stats</string>
     <string name="point_am_liorer">Field to Improve</string>
@@ -17,26 +17,24 @@
     <string name="points_am_liorer">Fileds to improve</string>
     <string name="joueurs">Players</string>
     <string name="ramp_up">Ramp-Up Analysis</string>
-    <string name="bienvenu_message">Welcome to Ramp-Up Analyser and track Fileds you need to improve in your Processes and Visualize Results in the Stats Panel. You can also add the score of participant. Start by adding Fileds to Improve in the Config Panel!</string>
+    <string name="bienvenu_message">Welcome to Ramp-Up Analyzer and track Fields you need to improve in your Processes and Visualize Results on Visual Graphics in the Stats Panel. Start by adding Fields to Improve in the Config Panel!</string>
     <string name="ajouterNouveau">Add a New\ </string>
     <string name="clear_data">Clear Data</string>
-
-
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ok">OK</string>
+    <string name="effacer">Delete</string>
+    <string name="effacerStatistiques">Are you sure you want to delete all Data Entries? This cannot be undone!</string>
+    <string name="cancel">Cancel</string>
+    <string name="vraimentEffacer">Do You really want to Delete </string>
+    <string name="effacerAssocieEgalement">\? \nYou Will Delete all associated Data as well!</string>
+    <string name="impossibleEffacerDernier">Impossible to Delete the last </string>
+    <string name="erreur">Error</string>
+    <string name="occurencesDes">Occurance of  </string>
+    <string name="jour">Day </string>
+    <string name="ratioDerniersJours">Most Recurrent Filed of last Days </string>
+    <string name="rationPointsSemaine">Most Recurrent Filed of last Weeks</string>
+    <string name="voulezEffacerPartie">Do You really want to Delete the Session from </string>
+    <string name="ajouter">Add</string>
+    <string name="global">Global</string>
+    <string name="semaine">Week</string>
+    <string name="liste_parties">Session List</string>
 </resources>
