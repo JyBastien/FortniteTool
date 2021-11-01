@@ -38,4 +38,11 @@
     <string name="semaine">Semaine</string>
     <string name="liste_parties">Liste Parties</string>
     <string name="aucuneDonnee">Aucune donnée enregistrée, commencez par entrer des données dans l\'onglet Partie</string>
+    <string name="couleur_du_graphique">Couleur du Graphique</string>
+    <string name="cyan">CYAN</string>
+    <string name="rouge">ROUGE</string>
+    <string name="bleu">BLEU</string>
+    <string name="vert">VERT</string>
+    <string name="jaune">JAUNE</string>
+    <string name="dataset">DataSet</string>
 </resources>

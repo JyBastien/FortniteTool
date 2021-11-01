@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import data.DataAccess;
 import data.DbAdapter;
 import fragment.ConfigFragment;
 import fragment.ElementConfigFragment;
@@ -51,29 +53,16 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Score> scores;
     private ArrayList<Joueur> joueurs;
     private ArrayList<Point> points;
+    private int couleurGraphique;
 
-    //todo mettre un check pour clear data, disabled si la liste est nulle
-
-
+    //todo clean code
+    //todo ajouter login firebase
+    //todo ajouter data firebase
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         setContentView(R.layout.activity_main);
         setWidgets();
-        dbAdapter = new DbAdapter(MainActivity.this);
-        dbAdapter.ouvrirBd();
-        //refreshScores();
-        //this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
-        this.points = (ArrayList<Point>) (Object) dbAdapter.fetchAllPersistable(new Point());
-        //statsBuilder();
-        dbAdapter.fermerBd();
-
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this,R.color.black)));
-
         boolean firstRun = false;
 //        if(joueurs.size()==0){
 //            Joueur joueur = new Joueur(this.getResources().getString(R.string.joueur));
@@ -174,7 +163,26 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         fragmentContainerView = (FragmentContainerView) findViewById(R.id.fragmentContainerViewMainActivity);
         setTabLayoutListener();
+        dbAdapter = new DbAdapter(MainActivity.this);
+        initialiserCouleur();
+        initialiserPoints();
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this,R.color.black)));
+    }
 
+    private void initialiserCouleur() {
+        dbAdapter.ouvrirBd();
+        this.couleurGraphique = dbAdapter.getCouleurGraphique();
+        dbAdapter.fermerBd();
+    }
+
+    private void initialiserPoints() {
+        dbAdapter.ouvrirBd();
+        //refreshScores();
+        //this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
+        this.points = (ArrayList<Point>) (Object) dbAdapter.fetchAllPersistable(new Point());
+        //statsBuilder();
+        dbAdapter.fermerBd();
     }
 
     private void setTabLayoutListener() {
@@ -406,5 +414,16 @@ public class MainActivity extends AppCompatActivity {
         stats = Stats.getStatsParSemaine(partiesOrderedParJour);
         }
         return stats;
+    }
+
+    public int getCouleurGraphique() {
+        return this.couleurGraphique;
+    }
+
+    public void setCouleurGraphique(int couleur) {
+        this.couleurGraphique = couleur;
+        dbAdapter.ouvrirBd();
+        dbAdapter.setCouleurGraphique(couleur);
+        dbAdapter.fermerBd();
     }
 }

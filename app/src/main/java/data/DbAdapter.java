@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.ContactsContract;
 import android.widget.Toast;
 
@@ -46,12 +47,12 @@ public class DbAdapter {
         return db.insert(tableName, null, cv);
     }
 
-    public ArrayList<Persistable> fetchAllPersistable(Persistable entity){
+    public ArrayList<Persistable> fetchAllPersistable(Persistable entity) {
         ArrayList<Persistable> entities = new ArrayList<>(0);
         String[] colonnes = entity.getColonnes();
-        Cursor cursor = db.query(entity.getTableName(),entity.getColonnes(),null,null,null,null,null);
+        Cursor cursor = db.query(entity.getTableName(), entity.getColonnes(), null, null, null, null, null);
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()){
+        while (!cursor.isAfterLast()) {
             try {
                 entity = entity.factoryFromCursor(cursor);
                 entities.add(entity);
@@ -64,13 +65,13 @@ public class DbAdapter {
         return entities;
     }
 
-    public ArrayList<Partie> fetchAllPartieParDate(){
+    public ArrayList<Partie> fetchAllPartieParDate() {
         Partie partie = new Partie();
         ArrayList<Partie> parties = new ArrayList<>(0);
         String[] colonnes = partie.getColonnes();
-        Cursor cursor = db.query(partie.getTableName(),colonnes,null,null,null,null,"datetime(" + DataAccess.COL_DATE + ") desc");
+        Cursor cursor = db.query(partie.getTableName(), colonnes, null, null, null, null, "datetime(" + DataAccess.COL_DATE + ") desc");
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()){
+        while (!cursor.isAfterLast()) {
             try {
                 partie = (Partie) partie.factoryFromCursor(cursor);
                 parties.add(partie);
@@ -84,57 +85,75 @@ public class DbAdapter {
     }
 
 
-    public Boolean getBoolean(){
+    public Boolean getBoolean() {
         return null;
     }
 
 
     public long updateJoueur(Joueur ancienJoueur, Joueur nouveauJoueur) {
-        return db.update(ancienJoueur.getTableName(),nouveauJoueur.getContentValues(),DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{ancienJoueur.getNom()});
+        return db.update(ancienJoueur.getTableName(), nouveauJoueur.getContentValues(), DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{ancienJoueur.getNom()});
     }
+
     public long updatePoint(Point ancienPoint, Point nouveauPoint) {
-        return db.update(ancienPoint.getTableName(),nouveauPoint.getContentValues(),  DataAccess.COL_NOM_POINT + " = ?",new String[]{ancienPoint.getNom()});
+        return db.update(ancienPoint.getTableName(), nouveauPoint.getContentValues(), DataAccess.COL_NOM_POINT + " = ?", new String[]{ancienPoint.getNom()});
     }
 
     public void deleteJoueur(Joueur joueur) {
-        db.delete(joueur.getTableName(),DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{joueur.getNom()});
+        db.delete(joueur.getTableName(), DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{joueur.getNom()});
     }
 
     public void deletePoint(Point point) {
-        db.delete(point.getTableName(),DataAccess.COL_NOM_POINT + " = ?",new String[]{point.getNom()});
+        db.delete(point.getTableName(), DataAccess.COL_NOM_POINT + " = ?", new String[]{point.getNom()});
     }
 
     public void updateParties(Point ancienPoint, Point nouveauPoint) {
         ContentValues cv = new ContentValues();
-        cv.put(DataAccess.COL_POINT,nouveauPoint.getNom());
-        db.update(DataAccess.TABLE_GAME,cv,DataAccess.COL_POINT + " = ?",new String[]{ancienPoint.getNom()});
+        cv.put(DataAccess.COL_POINT, nouveauPoint.getNom());
+        db.update(DataAccess.TABLE_GAME, cv, DataAccess.COL_POINT + " = ?", new String[]{ancienPoint.getNom()});
     }
 
     public void updateScores(Joueur ancienJoueur, Joueur nouveauJoueur) {
         ContentValues cv = new ContentValues();
-        cv.put(DataAccess.COL_NOM_JOUEUR,nouveauJoueur.getNom());
-        db.update(DataAccess.TABLE_SCORE,cv,DataAccess.COL_NOM_JOUEUR + " = ?",new String[]{ancienJoueur.getNom()});
+        cv.put(DataAccess.COL_NOM_JOUEUR, nouveauJoueur.getNom());
+        db.update(DataAccess.TABLE_SCORE, cv, DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{ancienJoueur.getNom()});
     }
 
     public void deleteJoueurScores(Joueur joueurAEffacer) {
-        db.delete(DataAccess.TABLE_SCORE,DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{joueurAEffacer.getNom()});
+        db.delete(DataAccess.TABLE_SCORE, DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{joueurAEffacer.getNom()});
     }
 
     public void deletePartiesPoint(Point pointAEffacer) {
-        db.delete(DataAccess.TABLE_GAME,DataAccess.COL_POINT + " = ?",new String[]{pointAEffacer.getNom()});
+        db.delete(DataAccess.TABLE_GAME, DataAccess.COL_POINT + " = ?", new String[]{pointAEffacer.getNom()});
     }
 
     public void clearData() {
-        db.delete(DataAccess.TABLE_GAME,null,null);
-        db.delete(DataAccess.TABLE_SCORE,null,null);
+        db.delete(DataAccess.TABLE_GAME, null, null);
+        db.delete(DataAccess.TABLE_SCORE, null, null);
     }
 
     public void deletePartie(Partie partie) {
-        db.delete(DataAccess.TABLE_GAME,DataAccess.COL_DATE + " = ?",new String[]{partie.getTemps().toString()});
+        db.delete(DataAccess.TABLE_GAME, DataAccess.COL_DATE + " = ?", new String[]{partie.getTemps().toString()});
     }
 
     public void deleteScore(Score score) {
-        db.delete(DataAccess.TABLE_SCORE,DataAccess.COL_DATE + " = ?",new String[]{score.getTemps().toString()});
+        db.delete(DataAccess.TABLE_SCORE, DataAccess.COL_DATE + " = ?", new String[]{score.getTemps().toString()});
     }
 
+    public int getCouleurGraphique() {
+        String[] colonnes = {DataAccess.COL_NUMERO};
+        Cursor cursor = db.rawQuery("select * from couleur",null);
+        cursor.moveToFirst();
+        int color = 0;
+        if (!cursor.isAfterLast()) {
+            color = cursor.getInt(0);
+        }
+        cursor.close();
+        return color;
+    }
+
+    public void setCouleurGraphique(int couleur) {
+        ContentValues cv = new ContentValues();
+        cv.put(DataAccess.COL_NUMERO,couleur);
+        db.insert(DataAccess.TABLE_COULEUR,null,cv);
+    }
 }

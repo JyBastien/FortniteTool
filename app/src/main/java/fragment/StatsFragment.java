@@ -188,6 +188,7 @@ public class StatsFragment extends Fragment {
         remplirObjetsGraphique(entrees, barEntries, points, parties.size());
         BarDataSet barDataSet = new BarDataSet(barEntries, "%");
         barDataSet.setValueTextSize(12f);
+        barDataSet.setColor(mainActivity.getCouleurGraphique());
         setCharXAxis(points);
         chart.setData(new BarData(barDataSet));
         setCharDescription(getString(R.string.occurencesDes) + " " + getString(R.string.points_am_liorer));
@@ -209,6 +210,7 @@ public class StatsFragment extends Fragment {
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "%");
         barDataSet.setValueTextSize(12f);
+        barDataSet.setColor(mainActivity.getCouleurGraphique());
         setCharXAxis(points);
         BarData theData = new BarData(barDataSet);
         setCharDescription(description);

@@ -38,4 +38,11 @@
     <string name="semaine">Week</string>
     <string name="liste_parties">Session List</string>
     <string name="aucuneDonnee">No Saved Date, Start by adding Data in the Game Tab</string>
+    <string name="couleur_du_graphique">Graph\'s Color</string>
+    <string name="cyan">CYAN</string>
+    <string name="rouge">RED</string>
+    <string name="bleu">BLUE</string>
+    <string name="vert">GREEN</string>
+    <string name="jaune">YELLOW</string>
+    <string name="dataset">DataSet</string>
 </resources>

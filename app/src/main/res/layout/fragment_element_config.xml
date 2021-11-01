@@ -6,9 +6,46 @@
     android:layout_height="match_parent"
     tools:context="fragment.PartieFragment">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="152dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="153dp"
+            android:text="@string/couleur_du_graphique"
+            android:textColor="@color/White"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnAjouter" />
+
+        <Spinner
+            android:id="@+id/cmbCouleur"
+            android:layout_width="409dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="23dp"
+            android:background="@android:drawable/btn_dropdown"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <Spinner
+            android:id="@+id/cmbDataSet"
+            android:layout_width="409dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@android:drawable/btn_dropdown"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.521"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <TextView
             android:id="@+id/txtTitreConfig"
@@ -19,7 +56,8 @@
             android:text="TextView"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="34sp"
+            android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,19 +66,32 @@
             android:layout_width="407dp"
             android:layout_height="250dp"
             android:layout_marginTop="32dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitreConfig"
             android:divider="@color/list_divider"
-            android:dividerHeight=".05dp"/>
+            android:dividerHeight=".05dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitreConfig" />
 
         <Button
             android:id="@+id/btnAjouter"
             android:layout_width="152dp"
             android:layout_height="76dp"
+            android:layout_marginStart="240dp"
             android:layout_marginTop="36dp"
             android:text="@string/nouveau"
-            app:layout_constraintTop_toBottomOf="@+id/lstElementConfig"
-            tools:layout_editor_absoluteX="228dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lstElementConfig" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/dataset"
+            android:textColor="@color/White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cmbCouleur" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

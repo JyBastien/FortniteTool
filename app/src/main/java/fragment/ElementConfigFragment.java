@@ -1,6 +1,7 @@
 package fragment;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -18,10 +20,12 @@ import androidx.fragment.app.Fragment;
 import com.example.fortnitetool.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import activity.MainActivity;
 import modele.Joueur;
 import modele.Point;
+import utils.AbstractOnItemListener;
 import utils.Persistable;
 
 public class ElementConfigFragment extends Fragment {
@@ -32,15 +36,17 @@ public class ElementConfigFragment extends Fragment {
     private View view;
     private ListView listeElementView;
     private Button btnAjouter;
-
+    private Spinner cmbCouleur;
+    private ArrayList<String> arrayCouleurs;
+    private ArrayList<Integer> COULEURS = new ArrayList<>(Arrays.asList(Color.CYAN,Color.RED,Color.BLUE,Color.GREEN,Color.YELLOW));
 
 
     public ElementConfigFragment(String titre) {
         this.titre = titre;
     }
 
-    public ElementConfigFragment(){}
-
+    public ElementConfigFragment() {
+    }
 
 
     @Override
@@ -56,16 +62,21 @@ public class ElementConfigFragment extends Fragment {
 
     private void setListeners() {
         setBtnListeners();
-        setListViewListener();
+        setListListeners();
     }
 
-    private void setListViewListener() {
+    private void setListListeners() {
         this.listeElementView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 modifierElement(listeElementView.getItemAtPosition(i).toString());
             }
         });
+        cmbCouleur.setOnItemSelectedListener(new AbstractOnItemListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                activity.setCouleurGraphique(COULEURS.get(i));
+            }});
     }
 
     private void modifierElement(String nomElement) {
@@ -80,13 +91,12 @@ public class ElementConfigFragment extends Fragment {
                 alertNouveauElement(view);
             }
         });
-
     }
 
 
     private void alertNouveauElement(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(),R.style.confirmDialogueTheme);
-        String titreSingulier = this.titre.equals(getResources().getString(R.string.points_am_liorer))? getResources().getString(R.string.point_am_liorer) : getResources().getString(R.string.joueur);
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(), R.style.confirmDialogueTheme);
+        String titreSingulier = this.titre.equals(getResources().getString(R.string.points_am_liorer)) ? getResources().getString(R.string.point_am_liorer) : getResources().getString(R.string.joueur);
         builder.setTitle(getString(R.string.ajouterNouveau) + titreSingulier);
         // Set up the input
         EditText txtReponse = new EditText(view.getContext());
@@ -95,7 +105,7 @@ public class ElementConfigFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String reponse = txtReponse.getText().toString();
-                if (!reponse.trim().equals("")){
+                if (!reponse.trim().equals("")) {
                     insertNouveauElement(reponse);
                 }
             }
@@ -105,28 +115,35 @@ public class ElementConfigFragment extends Fragment {
     }
 
     private void insertNouveauElement(String reponse) {
-        if (this.titre.equals(getResources().getString(R.string.points_am_liorer))){
+        if (this.titre.equals(getResources().getString(R.string.points_am_liorer))) {
             activity.ajouterPoint(new Point(reponse));
-        }else {
+        } else {
             activity.ajouterJoueur(new Joueur(reponse));
         }
         configurerListe();
     }
 
     private void setWidgets(View view) {
+        arrayCouleurs = new ArrayList<String>(Arrays.asList(getString(R.string.cyan), getString(R.string.rouge), getString(R.string.bleu), getString(R.string.vert), getString(R.string.jaune)));
+
         this.txtTitre = view.findViewById(R.id.txtTitreConfig);
         txtTitre.setText(this.titre);
         btnAjouter = view.findViewById(R.id.btnAjouter);
         this.listeElementView = view.findViewById(R.id.lstElementConfig);
         configurerListe();
+        this.cmbCouleur = view.findViewById(R.id.cmbCouleur);
+        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(view.getContext(), R.layout.spinner, arrayCouleurs);
+        adapteur.setDropDownViewResource(R.layout.spinner_drop_down);
+        cmbCouleur.setAdapter(adapteur);
+        cmbCouleur.setSelection(COULEURS.indexOf(activity.getCouleurGraphique()));
     }
 
     public void configurerListe() {
         ArrayList<Persistable> listeElements;
-        if (this.titre.equals(activity.getResources().getString(R.string.points_am_liorer))){
+        if (this.titre.equals(activity.getResources().getString(R.string.points_am_liorer))) {
             listeElements = (ArrayList<Persistable>) (Object) activity.getPoints();
-        }else {
-            listeElements = (ArrayList<Persistable>) (Object)activity.getJoueurs();
+        } else {
+            listeElements = (ArrayList<Persistable>) (Object) activity.getJoueurs();
         }
 
         ArrayList<String> stringArray = Persistable.toArrayString(listeElements);
