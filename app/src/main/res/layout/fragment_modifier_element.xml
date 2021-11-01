@@ -19,7 +19,7 @@
             android:layout_marginTop="35dp"
             android:text=""
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/White"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,6 +32,7 @@
             android:layout_marginTop="47dp"
             android:ems="10"
             android:inputType="textPersonName"
+            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtNomElementOriginal" />
 

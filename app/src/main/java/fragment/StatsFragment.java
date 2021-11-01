@@ -223,7 +223,7 @@ public class StatsFragment extends Fragment {
     }
 
     private void setChartAttributes() {
-        int color = Color.GRAY;
+        int color = Color.WHITE;
         chart.getLegend().setTextColor(color);
         chart.getXAxis().setTextColor(color);
         chart.getAxisLeft().setTextColor(color);

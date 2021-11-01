@@ -85,7 +85,7 @@ public class ElementConfigFragment extends Fragment {
 
 
     private void alertNouveauElement(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext(),R.style.confirmDialogueTheme);
         String titreSingulier = this.titre.equals(getResources().getString(R.string.points_am_liorer))? getResources().getString(R.string.point_am_liorer) : getResources().getString(R.string.joueur);
         builder.setTitle(getString(R.string.ajouterNouveau) + titreSingulier);
         // Set up the input

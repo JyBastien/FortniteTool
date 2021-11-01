@@ -129,7 +129,8 @@ public class PartieFragment extends Fragment {
         btnEnregistrer = view.findViewById(R.id.btnEnregistrer);
 
         //2. Adapter
-        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(), R.layout.session_liste, pointsAmeliorer);
+        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(), R.layout.spinner, pointsAmeliorer);
+        adapteurRaison.setDropDownViewResource(R.layout.spinner_drop_down);
 
         //3. Ler l'adapter avec lsiting
         cmbRaison.setAdapter(adapteurRaison);
