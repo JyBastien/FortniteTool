@@ -9,14 +9,15 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fortnitetool.R;
@@ -38,9 +39,7 @@ import java.util.Map;
 import activity.MainActivity;
 import modele.Entree;
 import modele.Partie;
-import modele.Score;
 import modele.Stats;
-import utils.Persistable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +62,8 @@ public class StatsFragment extends Fragment {
     private MainActivity mainActivity;
     private BarChart chart;
     private TabLayout tabLayout;
+    private Button btnClearData;
+    private TextView txtChartDescription;
 
 
     public StatsFragment() {
@@ -110,9 +111,10 @@ public class StatsFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setWidgets(View view) {
+        txtChartDescription = view.findViewById(R.id.txtChartDescription);
         //associer l'activity main a la propriété activity
         this.mainActivity = (MainActivity) this.getActivity();
-
+        btnClearData = view.findViewById(R.id.btnClear);
         //monter la liste des parties enregistrées
         listeParties = view.findViewById(R.id.lstParties);
         listeParties.setNestedScrollingEnabled(true);
@@ -131,26 +133,16 @@ public class StatsFragment extends Fragment {
         //   remplirStatsJoueur(nomJoueur);
 
         chart = view.findViewById(R.id.chart);
-        showBArChartTout();
+        ArrayList<Partie> parties = mainActivity.getParties();
+        if (parties.size() > 0){
+            showBArChartTout(parties);
+        }else {
+            btnClearData.setEnabled(false);
+            Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
+        }
         tabLayout = view.findViewById(R.id.tabLayoutGraphs);
     }
 
-    private void showBArChartTout() {
-        ArrayList<Partie> parties = mainActivity.getParties();
-        HashMap<String, Integer> statsBuilder = statsBuilderDeParties(parties);
-        ArrayList<Entree> entrees = listEntreeBuilderFromStatsBuilder(statsBuilder);
-        Collections.sort(entrees);
-        ArrayList<BarEntry> barEntries = new ArrayList<>();
-        ArrayList<String> points = new ArrayList<>();
-        remplirObjetsGraphique(entrees, barEntries, points, parties.size());
-        BarDataSet barDataSet = new BarDataSet(barEntries, "%");
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(points));
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getXAxis().setLabelCount(points.size());
-        chart.setData(new BarData(barDataSet));
-        setCharDescription(getString(R.string.occurencesDes) + getString(R.string.points_am_liorer));
-        setChartAttributes();
-    }
 
     private void remplirObjetsGraphique(ArrayList<Entree> entrees, ArrayList<BarEntry> barEntries, ArrayList<String> points, int qteTotal) {
         String texte;
@@ -187,6 +179,20 @@ public class StatsFragment extends Fragment {
         }
         return statsBuilder;
     }
+    private void showBArChartTout(ArrayList<Partie> parties) {
+        HashMap<String, Integer> statsBuilder = statsBuilderDeParties(parties);
+        ArrayList<Entree> entrees = listEntreeBuilderFromStatsBuilder(statsBuilder);
+        Collections.sort(entrees);
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        ArrayList<String> points = new ArrayList<>();
+        remplirObjetsGraphique(entrees, barEntries, points, parties.size());
+        BarDataSet barDataSet = new BarDataSet(barEntries, "%");
+        barDataSet.setValueTextSize(12f);
+        setCharXAxis(points);
+        chart.setData(new BarData(barDataSet));
+        setCharDescription(getString(R.string.occurencesDes) + " " + getString(R.string.points_am_liorer));
+        setChartAttributes();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showStatsInBarChart(String description, ArrayList<Stats> stats) {
@@ -202,51 +208,56 @@ public class StatsFragment extends Fragment {
         }
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "%");
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(points));
-        chart.getXAxis().setLabelCount(points.size(),points.size() == 1);
+        barDataSet.setValueTextSize(12f);
+        setCharXAxis(points);
         BarData theData = new BarData(barDataSet);
-
         setCharDescription(description);
         chart.setData(theData);
         setChartAttributes();
     }
 
+    private void setCharXAxis(ArrayList<String> points) {
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(points));
+        chart.getXAxis().setLabelCount(points.size(),points.size() == 1);
+        chart.getXAxis().setCenterAxisLabels(points.size() == 1);
+    }
+
     private void setChartAttributes() {
-        chart.getLegend().setTextColor(Color.WHITE);
-        chart.getXAxis().setTextColor(Color.WHITE);
-        chart.getAxisLeft().setTextColor(Color.WHITE);
-        chart.getBarData().setValueTextColor(Color.WHITE);
-        chart.getLegend().setTextColor(Color.WHITE);
+        int color = Color.GRAY;
+        chart.getLegend().setTextColor(color);
+        chart.getXAxis().setTextColor(color);
+        chart.getAxisLeft().setTextColor(color);
+        chart.getBarData().setValueTextColor(color);
+        chart.getLegend().setTextColor(color);
         chart.setTouchEnabled(true);
         chart.setDragEnabled(true);
         chart.setScaleEnabled(true);
         chart.animateY(1500);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.invalidate();
     }
 
     private void setCharDescription(String texte) {
-        Description description = new Description();
-        description.setText(texte);
-        description.setTextColor(Color.GRAY);
-        chart.setDescription(description);
+    txtChartDescription.setText(texte);
+    chart.getDescription().setText("");
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void remplirStatsParties() {
         ArrayList<Partie> parties = mainActivity.getParties();
+        btnClearData.setEnabled(parties.size() > 0);
         ArrayAdapter<String> adapteur = null;
         ArrayList<String> listeStringFormatParties = null;
-        if (parties.size() > 0) {
+
             //          if (parties.size() < 5) {
             listeStringFormatParties = partiesToStringEnLigne(parties);
             //        } else //if (parties.size() < 10)
             //       {
             //           listeStringFormatParties = partiesToStringJour();
             //       }
-            adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, listeStringFormatParties);
+            adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.session_liste, listeStringFormatParties);
             listeParties.setAdapter(adapteur);
-        }
 
     }
     private void setListeners(View view) {
@@ -254,30 +265,20 @@ public class StatsFragment extends Fragment {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
-                switch (tab.getPosition()) {
-                    case 0: {
-                        showBArChartTout();
-                        break;
-                    }
-                    case 1: {
-                        ArrayList<Stats> stats = mainActivity.getStatsGrouperJour();
-                        showStatsInBarChart(getString(R.string.ratioDerniersJours),stats);
-                        break;
-                    }
-                    case 2: {
-                        showBarChartParSemaine();
-                        ArrayList<Stats> stats = mainActivity.getStatsGrouperSemaine();
-                        showStatsInBarChart(getString(R.string.rationPointsSemaine),stats);
-                        break;
-                    }
-                }
+                int i = tab.getPosition();
+                afficherStatsSelonSelectedTab(i);
             }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
+        });
+        btnClearData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogueEffacerConfirmation();
+            }
         });
 //        cmbJoueurs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
@@ -294,7 +295,7 @@ public class StatsFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ArrayList<Partie> parties = mainActivity.getParties();
-                dialogueConfirmation(parties.get(i));
+                dialogueEffacerConfirmation(parties.get(i));
                 return false;
             }
         });
@@ -308,19 +309,78 @@ public class StatsFragment extends Fragment {
 //        });
     }
 
-    private void showBarChartParSemaine() {
+    private void afficherStatsSelonSelectedTab(int i) {
+        switch (i) {
+            case 0: {
+                ArrayList<Partie> parties = mainActivity.getParties();
+                if (parties.size() > 0){
+                    showBArChartTout(parties);
+                }else {
+                    Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
+                    chart.clear();
+                }
+
+                break;
+            }
+            case 1: {
+                ArrayList<Stats> stats = mainActivity.getStatsGrouperJour();
+                if (stats != null && stats.size() > 0) {
+                    showStatsInBarChart(getString(R.string.ratioDerniersJours), stats);
+                }else {
+                    Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
+                    chart.clear();
+                }
+                break;
+            }
+            case 2: {
+                ArrayList<Stats> stats = mainActivity.getStatsGrouperSemaine();
+                if (stats != null && stats.size() > 0) {
+                    showStatsInBarChart(getString(R.string.rationPointsSemaine),stats);
+                }else {
+                    Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
+                    chart.clear();
+                }
+
+                break;
+            }
+        }
     }
 
-    private void dialogueConfirmation(Partie partie) {
-        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
+
+    private void dialogueEffacerConfirmation(Partie partie) {
+        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext(),R.style.confirmDialogueTheme);
         confirmDeleteDialog.setTitle(R.string.effacer);
-        confirmDeleteDialog.setMessage(getString(R.string.voulezEffacerPartie) + partie.getTemps().toString().substring(0, partie.getTemps().toString().length() - 7) + "?");
+        confirmDeleteDialog.setMessage(getString(R.string.voulezEffacerPartie) + " " + partie.getTemps().toString().substring(0, partie.getTemps().toString().length() - 7) + "?");
         confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mainActivity.effacerPartie(partie);
                 remplirStatsParties();
+                chart.clear();
+                int tabIndex = tabLayout.getSelectedTabPosition();
+                afficherStatsSelonSelectedTab(tabIndex);
+                dialogInterface.dismiss();
+            }
+        });
+        confirmDeleteDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        confirmDeleteDialog.show();
+    }
+    private void dialogueEffacerConfirmation() {
+        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext(),R.style.confirmDialogueTheme);
+        confirmDeleteDialog.setTitle(R.string.effacer);
+        confirmDeleteDialog.setMessage(R.string.effacerStatistiques);
+        confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mainActivity.clearData();
+                remplirStatsParties();
+                chart.clear();
                 dialogInterface.dismiss();
             }
         });

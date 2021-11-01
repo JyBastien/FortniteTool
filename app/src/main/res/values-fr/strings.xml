@@ -33,8 +33,9 @@
     <string name="rationPointsSemaine">Point Le Plus Récurents des Dernières Semaines </string>
     <string name="voulezEffacerPartie">Voulez-vous vraiment Effacer la partie ayant eu lieu le </string>
     <string name="jour">Jour </string>
-    <string name="ajouter">Ajouter</string>
+    <string name="nouveau">Nouveau</string>
     <string name="global">Global</string>
     <string name="semaine">Semaine</string>
     <string name="liste_parties">Liste Parties</string>
+    <string name="aucuneDonnee">Aucune donnée enregistrée, commencez par entrer des données dans l\'onglet Partie</string>
 </resources>

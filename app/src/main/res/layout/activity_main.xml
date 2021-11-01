@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@color/black">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="76dp">
+        android:layout_height="76dp"
+        android:background="@color/black"
+        app:tabTextColor="@color/gray"
+        app:tabSelectedTextColor="@color/purple_200">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

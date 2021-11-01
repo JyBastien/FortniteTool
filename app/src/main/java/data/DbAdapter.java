@@ -68,7 +68,7 @@ public class DbAdapter {
         Partie partie = new Partie();
         ArrayList<Partie> parties = new ArrayList<>(0);
         String[] colonnes = partie.getColonnes();
-        Cursor cursor = db.query(partie.getTableName(),colonnes,null,null,null,null,"date(" + DataAccess.COL_DATE + ") desc");
+        Cursor cursor = db.query(partie.getTableName(),colonnes,null,null,null,null,"datetime(" + DataAccess.COL_DATE + ") desc");
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
             try {

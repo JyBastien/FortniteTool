@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import activity.MainActivity;
 import modele.Partie;
 import modele.Score;
 import utils.AbstractOnItemListener;
-import utils.AbstractTextWatcher;
 import utils.Persistable;
 import utils.Validateur;
 
@@ -103,7 +101,7 @@ public class PartieFragment extends Fragment {
         int reponse = Validateur.verifierFormulaire(this);
         if (reponse == Validateur.SUCCES) {
             enregistrerPoint();
-            enregistrerScore();
+            //enregistrerScore();
             Toast.makeText(getActivity(), R.string.PartieEnregistree, Toast.LENGTH_SHORT).show();
         } else if (reponse == Validateur.PAS_POINT_AMELIORER) {
             Toast.makeText(getActivity(), R.string.SaisirPointAmeliorer, Toast.LENGTH_SHORT).show();
@@ -131,7 +129,7 @@ public class PartieFragment extends Fragment {
         btnEnregistrer = view.findViewById(R.id.btnEnregistrer);
 
         //2. Adapter
-        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(), R.layout.itemliste, pointsAmeliorer);
+        ArrayAdapter<String> adapteurRaison = new ArrayAdapter<String>(this.getActivity(), R.layout.session_liste, pointsAmeliorer);
 
         //3. Ler l'adapter avec lsiting
         cmbRaison.setAdapter(adapteurRaison);

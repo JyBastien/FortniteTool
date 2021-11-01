@@ -49,6 +49,7 @@
             android:padding="15dp"
             android:text="@string/point_am_liorer"
             android:textAlignment="center"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

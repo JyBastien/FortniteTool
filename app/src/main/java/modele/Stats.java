@@ -1,9 +1,7 @@
 package modele;
 
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,29 +76,21 @@ public class Stats {
     }
 
     public static ArrayList<Stats> getStatsParJour(ArrayList<Partie> partiesOrderedParJour) {
-        Partie partie = partiesOrderedParJour.get(0);
-        LocalDate date = partie.getDate();
-        LocalDate dateDebut = date.minusDays(1);
-        ArrayList<Stats> stats = getStatsParInterval(partiesOrderedParJour, dateDebut, 1);
+        ArrayList<Stats> stats = getStatsParIntervalJour(partiesOrderedParJour);
         return stats;
     }
     public static ArrayList<Stats> getStatsParSemaine(ArrayList<Partie> partiesOrderedParJour) {
-        Partie partie = partiesOrderedParJour.get(0);
-        LocalDate date = partie.getDate();
-        LocalDate dateDebut = date.with(DayOfWeek.MONDAY);
-        dateDebut = dateDebut.isEqual(date)? dateDebut.minusDays(7):dateDebut;
-        ArrayList<Stats> stats =  getStatsParInterval(partiesOrderedParJour, dateDebut, 7);
+        ArrayList<Stats> stats =  getStatsParIntervalSemaine(partiesOrderedParJour);
         //Pour commencer avec le premier du mois
         //dateFin = dateDebut.withDayOfMonth(1);
 
         return stats;
     }
-
-    private static ArrayList<Stats> getStatsParInterval(ArrayList<Partie> partiesOrderedParJour, LocalDate dateDebut, int interval) {
+    private static ArrayList<Stats> getStatsParIntervalJour(ArrayList<Partie> partiesOrderedParJour) {
         ArrayList<Stats> stats = new ArrayList<>();
         Partie partie;
-        LocalDate date;
-        LocalDate dateFin = dateDebut.plusDays(interval);
+        LocalDate ancienneDate = null;
+        LocalDate date = null;
         HashMap<String,Integer> statsBuilder = new HashMap<>();
 
         String pointAmeliorer;
@@ -110,7 +100,19 @@ public class Stats {
         {
             partie = partiesOrderedParJour.get(i);
             date = partie.getDate();
+            if (ancienneDate == null){
+                ancienneDate = date;
+            }
 
+            //si la deta depasse la periode observée
+            if (date.isBefore(ancienneDate)) {
+                //on compile les resultats et cré le stat
+                Stats stat = getStats(statsBuilder, date, date);
+                stats.add(stat);
+                //date de debut de la prochaine statistique
+                ancienneDate = date;
+                statsBuilder = new HashMap<>();
+            }
             //stats building
             pointAmeliorer = partie.getPointAmeliorer();
             if (statsBuilder.containsKey(pointAmeliorer)){
@@ -118,15 +120,51 @@ public class Stats {
             } else {
                 qte = 1;
             }
+            statsBuilder.put(pointAmeliorer, qte);
+        }
+        if (statsBuilder.size() > 0){
+            Stats stat = getStats(statsBuilder, date, date);
+            stats.add(stat);
+        }
+        return stats;
+    }
+
+    private static ArrayList<Stats> getStatsParIntervalSemaine(ArrayList<Partie> partiesOrderedParJour) {
+
+        Partie partie;
+        LocalDate dateDebut = null;
+        LocalDate date = null;
+        LocalDate dateFin = null;
+        ArrayList<Stats> stats = new ArrayList<>();
+        HashMap<String,Integer> statsBuilder = new HashMap<>();
+        String pointAmeliorer;
+        int qte = 0;
+
+        for (int i = 0; i < partiesOrderedParJour.size() && stats.size() < 5; i++)
+        {
+            partie = partiesOrderedParJour.get(i);
+            date = partie.getDate();
+            if (dateDebut == null){
+                dateDebut = date.with(DayOfWeek.MONDAY);
+                dateFin = dateDebut.plusDays(6);
+            }
+
             //si la deta depasse la periode observée
-            if (date.isBefore(dateDebut) || date.isEqual(dateDebut)) {
+            if (date.isBefore(dateDebut)) {
                 //on compile les resultats et cré le stat
                 Stats stat = getStats(statsBuilder, dateDebut, dateFin);
                 stats.add(stat);
                 //date de debut de la prochaine statistique
-                dateFin = dateDebut;
-                dateDebut = date.minusDays(interval);
+                dateDebut = date.with(DayOfWeek.MONDAY);
+                dateFin = dateDebut.plusDays(6);
                 statsBuilder = new HashMap<>();
+            }
+            //stats building
+            pointAmeliorer = partie.getPointAmeliorer();
+            if (statsBuilder.containsKey(pointAmeliorer)){
+                qte = statsBuilder.get(partie.getPointAmeliorer()) + 1;
+            } else {
+                qte = 1;
             }
             statsBuilder.put(pointAmeliorer, qte);
         }
@@ -136,6 +174,12 @@ public class Stats {
         }
         return stats;
     }
+
+    private static void initialiserDateStatsIntervalSemaine(LocalDate dateDebut, LocalDate date, LocalDate dateFin) {
+        dateDebut = date.with(DayOfWeek.MONDAY);
+        dateFin = dateDebut.plusDays(6);
+    }
+
 
     public static Stats getStats(HashMap<String, Integer> statsBuilder, LocalDate dateDebut, LocalDate dateFin) {
         int highScore = 0;

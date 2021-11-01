@@ -14,7 +14,7 @@
     <string name="SaisirScore">Please enter a score</string>
     <string name="SaisirJoueur">Please select a player name</string>
     <string name="PartieEnregistree">Game Saved</string>
-    <string name="points_am_liorer">Fileds to improve</string>
+    <string name="points_am_liorer">Fields to improve</string>
     <string name="joueurs">Players</string>
     <string name="ramp_up">Ramp-Up Analysis</string>
     <string name="bienvenu_message">Welcome to Ramp-Up Analyzer and track Fields you need to improve in your Processes and Visualize Results on Visual Graphics in the Stats Panel. Start by adding Fields to Improve in the Config Panel!</string>
@@ -30,11 +30,12 @@
     <string name="erreur">Error</string>
     <string name="occurencesDes">Occurance of  </string>
     <string name="jour">Day </string>
-    <string name="ratioDerniersJours">Most Recurrent Filed of last Days </string>
-    <string name="rationPointsSemaine">Most Recurrent Filed of last Weeks</string>
-    <string name="voulezEffacerPartie">Do You really want to Delete the Session from </string>
-    <string name="ajouter">Add</string>
+    <string name="ratioDerniersJours">Most Recurrent Field of last Days </string>
+    <string name="rationPointsSemaine">Most Recurrent Field of last Weeks</string>
+    <string name="voulezEffacerPartie">Do You really want to Delete the Game from </string>
+    <string name="nouveau">New</string>
     <string name="global">Global</string>
     <string name="semaine">Week</string>
     <string name="liste_parties">Session List</string>
+    <string name="aucuneDonnee">No Saved Date, Start by adding Data in the Game Tab</string>
 </resources>

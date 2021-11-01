@@ -32,7 +32,7 @@ public class ElementConfigFragment extends Fragment {
     private View view;
     private ListView listeElementView;
     private Button btnAjouter;
-    private Button btnClearData;
+
 
 
     public ElementConfigFragment(String titre) {
@@ -80,33 +80,9 @@ public class ElementConfigFragment extends Fragment {
                 alertNouveauElement(view);
             }
         });
-        btnClearData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogueConfirmation();
-            }
-        });
+
     }
 
-    private void dialogueConfirmation() {
-        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
-        confirmDeleteDialog.setTitle(R.string.effacer);
-        confirmDeleteDialog.setMessage(R.string.effacerStatistiques);
-        confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                activity.clearData();
-                dialogInterface.dismiss();
-            }
-        });
-        confirmDeleteDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        confirmDeleteDialog.show();
-    }
 
     private void alertNouveauElement(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -141,7 +117,6 @@ public class ElementConfigFragment extends Fragment {
         this.txtTitre = view.findViewById(R.id.txtTitreConfig);
         txtTitre.setText(this.titre);
         btnAjouter = view.findViewById(R.id.btnAjouter);
-        btnClearData = view.findViewById(R.id.btnClear);
         this.listeElementView = view.findViewById(R.id.lstElementConfig);
         configurerListe();
     }
@@ -155,7 +130,7 @@ public class ElementConfigFragment extends Fragment {
         }
 
         ArrayList<String> stringArray = Persistable.toArrayString(listeElements);
-        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, stringArray);
+        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.config_liste, stringArray);
         listeElementView.setAdapter(adapteur);
     }
 

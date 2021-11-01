@@ -29,27 +29,18 @@
             android:layout_height="250dp"
             android:layout_marginTop="32dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitreConfig" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTitreConfig"
+            android:divider="@color/list_divider"
+            android:dividerHeight=".05dp"/>
 
         <Button
             android:id="@+id/btnAjouter"
             android:layout_width="152dp"
             android:layout_height="76dp"
-            android:layout_marginStart="240dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/ajouter"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lstElementConfig" />
-
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="40dp"
-            android:text="@string/clear_data"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lstElementConfig" />
+            android:layout_marginTop="36dp"
+            android:text="@string/nouveau"
+            app:layout_constraintTop_toBottomOf="@+id/lstElementConfig"
+            tools:layout_editor_absoluteX="228dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

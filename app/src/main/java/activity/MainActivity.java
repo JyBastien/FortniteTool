@@ -1,20 +1,18 @@
 package activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.Build;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -36,13 +34,10 @@ import modele.Stats;
 import com.google.android.material.tabs.TabLayout;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -57,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Joueur> joueurs;
     private ArrayList<Point> points;
 
+    //todo mettre un check pour clear data, disabled si la liste est nulle
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +65,14 @@ public class MainActivity extends AppCompatActivity {
         setWidgets();
         dbAdapter = new DbAdapter(MainActivity.this);
         dbAdapter.ouvrirBd();
-        refreshParties();
         //refreshScores();
         //this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
         this.points = (ArrayList<Point>) (Object) dbAdapter.fetchAllPersistable(new Point());
         //statsBuilder();
         dbAdapter.fermerBd();
+
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this,R.color.black)));
 
         boolean firstRun = false;
 //        if(joueurs.size()==0){
@@ -224,9 +223,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ajouterPartie(Partie partie) {
-        parties.add(partie);
         dbAdapter.ouvrirBd();
         dbAdapter.insertPersistable(partie);
+        parties = dbAdapter.fetchAllPartieParDate();
         dbAdapter.fermerBd();
     }
 
@@ -262,6 +261,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public ArrayList<Partie> getParties() {
+        if (this.parties == null){
+            dbAdapter.ouvrirBd();
+            parties = dbAdapter.fetchAllPartieParDate();
+            dbAdapter.fermerBd();
+        }
         return parties;
     }
 
@@ -290,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
         refreshParties();
         dbAdapter.fermerBd();
 
-        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
+        remplacerFragment(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
     }
 
     public void modifierJoueur(Joueur ancienJoueur,String nouveauNom){
@@ -385,7 +389,10 @@ public class MainActivity extends AppCompatActivity {
         dbAdapter.ouvrirBd();
         ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate();
         dbAdapter.fermerBd();
-        ArrayList<Stats> stats = Stats.getStatsParJour(partiesOrderedParJour);
+        ArrayList<Stats> stats = null;
+        if (partiesOrderedParJour.size() > 0) {
+            stats = Stats.getStatsParJour(partiesOrderedParJour);
+        }
         return stats;
     }
 
@@ -394,8 +401,10 @@ public class MainActivity extends AppCompatActivity {
         dbAdapter.ouvrirBd();
         ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate();
         dbAdapter.fermerBd();
-        ArrayList<Stats> stats = Stats.getStatsParSemaine(partiesOrderedParJour);
+        ArrayList<Stats> stats = null;
+        if (partiesOrderedParJour.size() > 0) {
+        stats = Stats.getStatsParSemaine(partiesOrderedParJour);
+        }
         return stats;
     }
-
 }

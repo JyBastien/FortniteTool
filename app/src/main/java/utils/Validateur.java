@@ -11,12 +11,7 @@ public class Validateur {
     public static int verifierFormulaire(PartieFragment partieFragment) {
         if (partieFragment.getPointAmeliorer() == null){
             return PAS_POINT_AMELIORER;
-        }else if (partieFragment.getPoints() == PartieFragment.PAS_SCORE){
-            return PAS_DE_SCORE;
-        }else if (partieFragment.getNomjoueur() == null){
-            return PAS_DE_JOUEUR;
-        }else{
-            return SUCCES;
         }
+            return SUCCES;
     }
 }
