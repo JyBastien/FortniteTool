@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -23,10 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import activity.MainActivity;
-import modele.Joueur;
 import modele.Point;
 import utils.AbstractOnItemListener;
-import utils.Persistable;
 
 public class ElementConfigFragment extends Fragment {
 
@@ -36,9 +35,12 @@ public class ElementConfigFragment extends Fragment {
     private View view;
     private ListView listeElementView;
     private Button btnAjouter;
+    private Button btnRenommer;
     private Spinner cmbCouleur;
+    private Spinner cmbDataSet;
     private ArrayList<String> arrayCouleurs;
-    private ArrayList<Integer> COULEURS = new ArrayList<>(Arrays.asList(Color.CYAN,Color.RED,Color.BLUE,Color.GREEN,Color.YELLOW));
+    private ArrayList<Integer> COULEURS = new ArrayList<>(Arrays.asList(Color.CYAN, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW));
+    private boolean listener = false;
 
 
     public ElementConfigFragment(String titre) {
@@ -60,28 +62,47 @@ public class ElementConfigFragment extends Fragment {
         return view;
     }
 
+    private void setWidgets(View view) {
+        arrayCouleurs = new ArrayList<String>(Arrays.asList(getString(R.string.cyan), getString(R.string.rouge), getString(R.string.bleu), getString(R.string.vert), getString(R.string.jaune)));
+
+        this.txtTitre = view.findViewById(R.id.txtTitreConfig);
+        txtTitre.setText(this.titre);
+        btnAjouter = view.findViewById(R.id.btnAjouter);
+        btnRenommer = view.findViewById(R.id.btnRenommer);
+        initialiserListePoints();
+        initialiserCmbCouleur(view);
+        initialiserCmbDataSet(view);
+    }
+
+    private void initialiserCmbDataSet(View view) {
+        this.cmbDataSet = view.findViewById(R.id.cmbDataSet);
+        ArrayList<String> nomsDataSets = activity.getNomsDataSets();
+        ArrayAdapter<String> adapteur = new ArrayAdapter<>(view.getContext(), R.layout.spinner, nomsDataSets);
+        adapteur.setDropDownViewResource(R.layout.spinner_drop_down);
+        cmbDataSet.setAdapter(adapteur);
+        cmbDataSet.setSelection(activity.getDataSetActuel());
+    }
+
+    private void initialiserCmbCouleur(View view) {
+        this.cmbCouleur = view.findViewById(R.id.cmbCouleur);
+        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(view.getContext(), R.layout.spinner, arrayCouleurs);
+        adapteur.setDropDownViewResource(R.layout.spinner_drop_down);
+        cmbCouleur.setAdapter(adapteur);
+        cmbCouleur.setSelection(COULEURS.indexOf(activity.getCouleurGraphique()));
+    }
+
+    public void initialiserListePoints() {
+        this.listeElementView = view.findViewById(R.id.lstElementConfig);
+        ArrayList<Point> listeElements;
+        listeElements = activity.getPoints();
+        ArrayList<String> stringArray = Point.toArrayString(listeElements);
+        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.config_liste, stringArray);
+        listeElementView.setAdapter(adapteur);
+    }
+
     private void setListeners() {
         setBtnListeners();
         setListListeners();
-    }
-
-    private void setListListeners() {
-        this.listeElementView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                modifierElement(listeElementView.getItemAtPosition(i).toString());
-            }
-        });
-        cmbCouleur.setOnItemSelectedListener(new AbstractOnItemListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                activity.setCouleurGraphique(COULEURS.get(i));
-            }});
-    }
-
-    private void modifierElement(String nomElement) {
-        //ConfigFragment configFragment = (ConfigFragment) activity.getFragment();
-        activity.remplacerFragment(new ModifierElementFragment(this.titre, nomElement));
     }
 
     private void setBtnListeners() {
@@ -89,6 +110,36 @@ public class ElementConfigFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 alertNouveauElement(view);
+            }
+        });
+        btnRenommer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String nomElement = cmbDataSet.getSelectedItem().toString();
+                activity.remplacerFragment(new ModifierElementFragment(ModifierElementFragment.DATASET, nomElement));
+            }
+        });
+    }
+
+    private void setListListeners() {
+        this.listeElementView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String nomElement = listeElementView.getItemAtPosition(i).toString();
+                activity.remplacerFragment(new ModifierElementFragment(ElementConfigFragment.this.titre, nomElement));
+            }
+        });
+        cmbCouleur.setOnItemSelectedListener(new AbstractOnItemListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                activity.setCouleurGraphique(COULEURS.get(i));
+            }
+        });
+        cmbDataSet.setOnItemSelectedListener(new AbstractOnItemListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                activity.setDataSet(i);
+                initialiserListePoints();
             }
         });
     }
@@ -100,6 +151,7 @@ public class ElementConfigFragment extends Fragment {
         builder.setTitle(getString(R.string.ajouterNouveau) + titreSingulier);
         // Set up the input
         EditText txtReponse = new EditText(view.getContext());
+        txtReponse.setTextColor(Color.WHITE);
         builder.setView(txtReponse);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
@@ -115,41 +167,10 @@ public class ElementConfigFragment extends Fragment {
     }
 
     private void insertNouveauElement(String reponse) {
-        if (this.titre.equals(getResources().getString(R.string.points_am_liorer))) {
-            activity.ajouterPoint(new Point(reponse));
-        } else {
-            activity.ajouterJoueur(new Joueur(reponse));
-        }
-        configurerListe();
+        activity.ajouterPoint(new Point(reponse));
+        initialiserListePoints();
     }
 
-    private void setWidgets(View view) {
-        arrayCouleurs = new ArrayList<String>(Arrays.asList(getString(R.string.cyan), getString(R.string.rouge), getString(R.string.bleu), getString(R.string.vert), getString(R.string.jaune)));
-
-        this.txtTitre = view.findViewById(R.id.txtTitreConfig);
-        txtTitre.setText(this.titre);
-        btnAjouter = view.findViewById(R.id.btnAjouter);
-        this.listeElementView = view.findViewById(R.id.lstElementConfig);
-        configurerListe();
-        this.cmbCouleur = view.findViewById(R.id.cmbCouleur);
-        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(view.getContext(), R.layout.spinner, arrayCouleurs);
-        adapteur.setDropDownViewResource(R.layout.spinner_drop_down);
-        cmbCouleur.setAdapter(adapteur);
-        cmbCouleur.setSelection(COULEURS.indexOf(activity.getCouleurGraphique()));
-    }
-
-    public void configurerListe() {
-        ArrayList<Persistable> listeElements;
-        if (this.titre.equals(activity.getResources().getString(R.string.points_am_liorer))) {
-            listeElements = (ArrayList<Persistable>) (Object) activity.getPoints();
-        } else {
-            listeElements = (ArrayList<Persistable>) (Object) activity.getJoueurs();
-        }
-
-        ArrayList<String> stringArray = Persistable.toArrayString(listeElements);
-        ArrayAdapter<String> adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.config_liste, stringArray);
-        listeElementView.setAdapter(adapteur);
-    }
 
 }
 

@@ -13,25 +13,32 @@
 
         <TextView
             android:id="@+id/txtNomElementOriginal"
-            android:layout_width="344dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="15sp"
             android:text=""
             android:textAlignment="center"
             android:textColor="@color/White"
-            android:textSize="20sp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <EditText
             android:id="@+id/txtNouveauNomElement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="100dp"
-            android:layout_marginTop="47dp"
+            android:layout_marginTop="116dp"
+            android:background="#393939"
             android:ems="10"
             android:inputType="textPersonName"
+            android:padding="15sp"
+            android:textAlignment="center"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtNomElementOriginal" />
@@ -40,9 +47,10 @@
             android:id="@+id/btnEnregistrerMods"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="73dp"
-            android:layout_marginTop="103dp"
+            android:layout_marginTop="140dp"
             android:text="@string/enregistrer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btnEffacerMods"
             app:layout_constraintTop_toBottomOf="@+id/txtNouveauNomElement" />
 
@@ -50,9 +58,21 @@
             android:id="@+id/btnEffacerMods"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="43dp"
-            android:layout_marginTop="103dp"
+            android:layout_marginTop="140dp"
             android:text="@string/effacer"
+            app:layout_constraintEnd_toStartOf="@+id/btnEnregistrerMods"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btnRetour"
+            app:layout_constraintTop_toBottomOf="@+id/txtNouveauNomElement" />
+
+        <Button
+            android:id="@+id/btnRetour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="140dp"
+            android:text="@string/back"
+            app:layout_constraintEnd_toStartOf="@+id/btnEffacerMods"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtNouveauNomElement" />
 

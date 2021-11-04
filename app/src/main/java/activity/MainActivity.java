@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -18,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import data.DataAccess;
 import data.DbAdapter;
 import fragment.ConfigFragment;
 import fragment.ElementConfigFragment;
@@ -27,12 +25,11 @@ import fragment.PartieFragment;
 import com.example.fortnitetool.R;
 
 import fragment.StatsFragment;
-import modele.Joueur;
 import modele.Partie;
 import modele.Point;
-import modele.Score;
 import modele.Stats;
 
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.sql.Timestamp;
@@ -43,6 +40,9 @@ import java.util.Date;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String[] POINTS_INITIAUX = {"Mal évalué la complexité","Retard d'un fournisseur","Imprévu"};
+    public static final String[] NOMS_DATASET_INITIAUX = {"DataSetA","DataSetB","DataSetC","DataSetD"};
+
     private DbAdapter dbAdapter;
     private TabLayout tabLayout;
     private FragmentContainerView fragmentContainerView;
@@ -50,44 +50,54 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private ArrayList<Partie> parties;
-    private ArrayList<Score> scores;
-    private ArrayList<Joueur> joueurs;
     private ArrayList<Point> points;
+    private ArrayList<String> nomsDataSets;
     private int couleurGraphique;
+    private int dataSetActuel;
+    private AdView pub;
 
     //todo clean code
     //todo ajouter login firebase
     //todo ajouter data firebase
+    //todo ajouter check avant dajouter un nouveau point , le pk va faire plantert si on entre 2 fois pareil
+    //test ajouter un point avec apostrphes ou caracteres illégaux
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setWidgets();
-        boolean firstRun = false;
-//        if(joueurs.size()==0){
-//            Joueur joueur = new Joueur(this.getResources().getString(R.string.joueur));
-//            joueurs.add(joueur);
-//            dbAdapter.ouvrirBd();
-//            dbAdapter.insertPersistable(joueur);
-//            dbAdapter.fermerBd();
-//            firstRun = true;
-//        }
 
-        if(points.size() == 0){
-            Point point = new Point(this.getResources().getString(R.string.point));
-            points.add(point);
-            dbAdapter.ouvrirBd();
-            dbAdapter.insertPersistable(point);
-            dbAdapter.fermerBd();
-            firstRun = true;
-        }
-
-        if(firstRun){
+        dbAdapter.ouvrirBd();
+        if(dbAdapter.firstRun()){
             alertDialogueMessageBienvenu(getString(R.string.bienvenu_message));
+            dbAdapter.updateFirstRun();
             tabLayout.getTabAt(2).select();
         }else{
             remplacerFragment(new PartieFragment());
         }
+        dbAdapter.fermerBd();
+    }
+    private void setWidgets() {
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        fragmentContainerView = (FragmentContainerView) findViewById(R.id.fragmentContainerViewMainActivity);
+        setTabLayoutListener();
+        dbAdapter = new DbAdapter(MainActivity.this);
+        dbAdapter.ouvrirBd();
+        initialiserCouleur();
+        initialiserDataSet();
+        initialiserPoints();
+        initialiserNomDataSets();
+        dbAdapter.fermerBd();
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this,R.color.black)));
+    }
+
+    private void initialiserNomDataSets() {
+        this.nomsDataSets = dbAdapter.fetchNomsDataSets();
+    }
+
+    private void initialiserDataSet() {
+        dataSetActuel = dbAdapter.fetchDataSetActuelId();
     }
 
     private void statsBuilder() {
@@ -101,13 +111,9 @@ public class MainActivity extends AppCompatActivity {
             localDate = LocalDate.of(2021, random.nextInt(12) + 1,random.nextInt(27) + 1);
             date = Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
             partie = new Partie(new Timestamp(date.getTime()),this.points.get(random.nextInt(this.points.size())).getNom());
-            dbAdapter.insertPersistable(partie);
+            dbAdapter.insertPartie(partie,dataSetActuel);
         }
         dbAdapter.fermerBd();
-    }
-
-    private void refreshScores() {
-        this.scores = (ArrayList<Score>) (Object) dbAdapter.fetchAllPersistable(new Score());
     }
 
     private void alertDialogueMessageBienvenu(String message) {
@@ -155,34 +161,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public ArrayList<Joueur> getjoueurs() {
-        return joueurs;
-    }
-
-    private void setWidgets() {
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        fragmentContainerView = (FragmentContainerView) findViewById(R.id.fragmentContainerViewMainActivity);
-        setTabLayoutListener();
-        dbAdapter = new DbAdapter(MainActivity.this);
-        initialiserCouleur();
-        initialiserPoints();
-        ActionBar bar = getSupportActionBar();
-        bar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this,R.color.black)));
-    }
-
     private void initialiserCouleur() {
-        dbAdapter.ouvrirBd();
-        this.couleurGraphique = dbAdapter.getCouleurGraphique();
-        dbAdapter.fermerBd();
+        this.couleurGraphique = dbAdapter.fetchCouleurGraphique();
     }
 
     private void initialiserPoints() {
-        dbAdapter.ouvrirBd();
+
         //refreshScores();
         //this.joueurs = (ArrayList<Joueur>) (Object) dbAdapter.fetchAllPersistable(new Joueur());
-        this.points = (ArrayList<Point>) (Object) dbAdapter.fetchAllPersistable(new Point());
+        this.points = dbAdapter.fetchAllPoints(dataSetActuel);
         //statsBuilder();
-        dbAdapter.fermerBd();
+
     }
 
     private void setTabLayoutListener() {
@@ -232,36 +221,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void ajouterPartie(Partie partie) {
         dbAdapter.ouvrirBd();
-        dbAdapter.insertPersistable(partie);
-        parties = dbAdapter.fetchAllPartieParDate();
+        dbAdapter.insertPartie(partie,dataSetActuel);
+        parties = dbAdapter.fetchAllPartieParDate(this.dataSetActuel);
         dbAdapter.fermerBd();
     }
 
-    public void ajouterScore(Score score) {
-        scores.add(score);
-        dbAdapter.ouvrirBd();
-        dbAdapter.insertPersistable(score);
-        dbAdapter.fermerBd();
-    }
     public void ajouterPoint(Point point) {
         points.add(point);
         dbAdapter.ouvrirBd();
-        dbAdapter.insertPersistable(point);
+        dbAdapter.insertPoint(point,dataSetActuel);
         dbAdapter.fermerBd();
-    }
-    public void ajouterJoueur(Joueur joueur) {
-        joueurs.add(joueur);
-        dbAdapter.ouvrirBd();
-        dbAdapter.insertPersistable(joueur);
-        dbAdapter.fermerBd();
-    }
-
-
-    //String[] reponse = {"BadStorm", "Unity", "OutSkilled","Casual", "BadDrop", "Position", "HotDrop", "Greed", "BadLoot","Bonjour mon ami comment a été ta fin de semaine"};
-
-
-    public ArrayList<Joueur> getJoueurs() {
-        return joueurs;
     }
 
     public ArrayList<Point> getPoints() {
@@ -271,22 +240,15 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Partie> getParties() {
         if (this.parties == null){
             dbAdapter.ouvrirBd();
-            parties = dbAdapter.fetchAllPartieParDate();
+            parties = dbAdapter.fetchAllPartieParDate(this.dataSetActuel);
             dbAdapter.fermerBd();
         }
         return parties;
     }
 
-    public ArrayList<Score> getScores() {
-        return scores;
-    }
 
     public Fragment getFragment() {
         return fragment;
-    }
-
-    public FragmentTransaction getFragmentTransaction() {
-        return fragmentTransaction;
     }
 
     public void modifierPoint(Point ancienPoint,String nouveauNom){
@@ -297,55 +259,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         dbAdapter.ouvrirBd();
-        dbAdapter.updatePoint(ancienPoint,nouveauPoint);
-        dbAdapter.updateParties(ancienPoint, nouveauPoint);
+        dbAdapter.updatePoint(ancienPoint,nouveauPoint,dataSetActuel);
+        dbAdapter.updateParties(ancienPoint, nouveauPoint,dataSetActuel);
         refreshParties();
         dbAdapter.fermerBd();
 
         remplacerFragment(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
     }
 
-    public void modifierJoueur(Joueur ancienJoueur,String nouveauNom){
-        Joueur nouveauJoueur = new Joueur(nouveauNom);
-        for (Joueur joueur : this.joueurs){
-            if (joueur.getNom().equals(ancienJoueur.getNom())){
-                joueur.setNom(nouveauNom);
-            }
-        }
-        dbAdapter.ouvrirBd();
-        dbAdapter.updateJoueur(ancienJoueur,nouveauJoueur);
-        dbAdapter.updateScores(ancienJoueur, nouveauJoueur);
-        refreshScores();
-        dbAdapter.fermerBd();
-
-        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.joueurs)));
-    }
-
-    private void retourElementConfig(Fragment fragment) {
-        ConfigFragment configFragment = (ConfigFragment) this.fragment;
-        configFragment.remplacerFragment(fragment);
-    }
-
-    public void effacerJoueur(String nomElement) {
-        Joueur joueur;
-        Boolean trouve = false;
-        for(int i = 0;i < this.joueurs.size() && !trouve ;i++){
-            joueur = this.joueurs.get(i);
-            if(joueur.getNom().equals(nomElement)){
-                joueurs.remove(i);
-                trouve = true;
-            }
-        }
-        Joueur joueurAEffacer = new Joueur(nomElement);
-        dbAdapter.ouvrirBd();
-        dbAdapter.deleteJoueur(joueurAEffacer);
-        dbAdapter.deleteJoueurScores(joueurAEffacer);
-        refreshScores();
-        dbAdapter.fermerBd();
-
-        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.joueurs)));
-
-    }
 
     public void effacerPoint(String nomElement) {
         Point point;
@@ -359,21 +280,20 @@ public class MainActivity extends AppCompatActivity {
         }
         Point pointAEffacer = new Point(nomElement);
         dbAdapter.ouvrirBd();
-        dbAdapter.deletePoint(pointAEffacer);
-        dbAdapter.deletePartiesPoint(pointAEffacer);
+        dbAdapter.deletePoint(pointAEffacer,this.dataSetActuel);
+        dbAdapter.deletePartiesPoint(pointAEffacer,this.dataSetActuel);
         refreshParties();
         dbAdapter.fermerBd();
-        retourElementConfig(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
+        remplacerFragment(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
     }
 
     private void refreshParties() {
-        this.parties = dbAdapter.fetchAllPartieParDate();
+        this.parties = dbAdapter.fetchAllPartieParDate(this.dataSetActuel);
     }
 
     public void clearData() {
         dbAdapter.ouvrirBd();
-        dbAdapter.clearData();
-        refreshScores();
+        dbAdapter.clearData(this.dataSetActuel);
         refreshParties();
         dbAdapter.fermerBd();
     }
@@ -381,21 +301,14 @@ public class MainActivity extends AppCompatActivity {
     public void effacerPartie(Partie partie) {
         this.parties.remove(partie);
         dbAdapter.ouvrirBd();
-        dbAdapter.deletePartie(partie);
+        dbAdapter.deletePartie(partie,this.dataSetActuel);
         refreshParties();
         dbAdapter.fermerBd();
     }
 
-    public void effacerScore(Score score) {
-        this.scores.remove(score);
-        dbAdapter.ouvrirBd();
-        dbAdapter.deleteScore(score);
-        refreshParties();
-        dbAdapter.fermerBd();
-    }
     public ArrayList<Stats> getStatsGrouperJour() {
         dbAdapter.ouvrirBd();
-        ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate();
+        ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate(dataSetActuel);
         dbAdapter.fermerBd();
         ArrayList<Stats> stats = null;
         if (partiesOrderedParJour.size() > 0) {
@@ -407,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<Stats> getStatsGrouperSemaine() {
         dbAdapter.ouvrirBd();
-        ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate();
+        ArrayList<Partie> partiesOrderedParJour = dbAdapter.fetchAllPartieParDate(this.dataSetActuel);
         dbAdapter.fermerBd();
         ArrayList<Stats> stats = null;
         if (partiesOrderedParJour.size() > 0) {
@@ -423,7 +336,32 @@ public class MainActivity extends AppCompatActivity {
     public void setCouleurGraphique(int couleur) {
         this.couleurGraphique = couleur;
         dbAdapter.ouvrirBd();
-        dbAdapter.setCouleurGraphique(couleur);
+        dbAdapter.updateCouleurGraphique(couleur);
         dbAdapter.fermerBd();
+    }
+
+    public ArrayList<String> getNomsDataSets() {
+        return nomsDataSets;
+    }
+
+    public void setDataSet(int i) {
+        dbAdapter.ouvrirBd();
+        dbAdapter.updateDataSetActuel(i);
+        this.parties = dbAdapter.fetchAllPartieParDate(i);
+        this.points = dbAdapter.fetchAllPoints(i);
+        dbAdapter.fermerBd();
+        this.dataSetActuel = i;
+    }
+
+    public int getDataSetActuel() {
+        return dataSetActuel;
+    }
+
+    public void modifierNomDataSet(String nouveauNom) {
+        dbAdapter.ouvrirBd();
+        dbAdapter.updateNomDataSet(nouveauNom,dataSetActuel);
+        initialiserNomDataSets();
+        dbAdapter.fermerBd();
+        remplacerFragment(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
     }
 }

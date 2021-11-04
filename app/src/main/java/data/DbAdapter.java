@@ -4,24 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.example.fortnitetool.R;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-import fragment.ConfigFragment;
-import modele.Joueur;
 import modele.Partie;
 import modele.Point;
-import modele.Score;
-import modele.Stats;
-import utils.Persistable;
-import utils.TimestampParser;
 
 public class DbAdapter {
     private SQLiteDatabase db;
@@ -41,35 +32,37 @@ public class DbAdapter {
         db.close();
     }
 
-    public long insertPersistable(Persistable entity) {
-        ContentValues cv = entity.getContentValues();
-        String tableName = entity.getTableName();
+    public long insertPartie(Partie partie, int dataSet) {
+        ContentValues cv = partie.getContentValues(dataSet);
+        String tableName = partie.getTableName();
         return db.insert(tableName, null, cv);
     }
 
-    public ArrayList<Persistable> fetchAllPersistable(Persistable entity) {
-        ArrayList<Persistable> entities = new ArrayList<>(0);
-        String[] colonnes = entity.getColonnes();
-        Cursor cursor = db.query(entity.getTableName(), entity.getColonnes(), null, null, null, null, null);
+    public ArrayList<Partie> fetchAllPersistable(Partie partie, int dataSet) {
+        ArrayList<Partie> parties = new ArrayList<>(0);
+        String[] colonnes = partie.getColonnes();
+        String[] selArgs = {String.valueOf(dataSet)};
+        Cursor cursor = db.query(partie.getTableName(), partie.getColonnes(), DataAccess.COL_DATASET + " = ?", selArgs, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             try {
-                entity = entity.factoryFromCursor(cursor);
-                entities.add(entity);
+                partie = partie.factoryFromCursor(cursor);
+                parties.add(partie);
             } catch (ParseException e) {
                 Toast.makeText(context, R.string.DateIncorrecte, Toast.LENGTH_SHORT).show();
             }
             cursor.moveToNext();
         }
         cursor.close();
-        return entities;
+        return parties;
     }
 
-    public ArrayList<Partie> fetchAllPartieParDate() {
+    public ArrayList<Partie> fetchAllPartieParDate(int dataSet) {
         Partie partie = new Partie();
         ArrayList<Partie> parties = new ArrayList<>(0);
         String[] colonnes = partie.getColonnes();
-        Cursor cursor = db.query(partie.getTableName(), colonnes, null, null, null, null, "datetime(" + DataAccess.COL_DATE + ") desc");
+        String[] selArgs = {String.valueOf(dataSet)};
+        Cursor cursor = db.query(partie.getTableName(), colonnes, DataAccess.COL_DATASET + " = ?", selArgs, null, null, "datetime(" + DataAccess.COL_DATE + ") desc");
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             try {
@@ -85,75 +78,130 @@ public class DbAdapter {
     }
 
 
-    public Boolean getBoolean() {
-        return null;
+    public long updatePoint(Point ancienPoint, Point nouveauPoint, int dataSet) {
+        return db.update(DataAccess.TABLE_POINT, nouveauPoint.getContentValues(dataSet), DataAccess.COL_NOM_POINT + " = ? AND " + DataAccess.COL_DATASET + " = ?", new String[]{ancienPoint.getNom(),String.valueOf(dataSet)});
     }
 
-
-    public long updateJoueur(Joueur ancienJoueur, Joueur nouveauJoueur) {
-        return db.update(ancienJoueur.getTableName(), nouveauJoueur.getContentValues(), DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{ancienJoueur.getNom()});
+    public void deletePoint(Point point,int dataSet) {
+        db.delete(DataAccess.TABLE_POINT, DataAccess.COL_NOM_POINT + " = ? AND " + DataAccess.COL_DATASET + " = ?", new String[]{point.getNom(),String.valueOf(dataSet)});
     }
 
-    public long updatePoint(Point ancienPoint, Point nouveauPoint) {
-        return db.update(ancienPoint.getTableName(), nouveauPoint.getContentValues(), DataAccess.COL_NOM_POINT + " = ?", new String[]{ancienPoint.getNom()});
-    }
-
-    public void deleteJoueur(Joueur joueur) {
-        db.delete(joueur.getTableName(), DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{joueur.getNom()});
-    }
-
-    public void deletePoint(Point point) {
-        db.delete(point.getTableName(), DataAccess.COL_NOM_POINT + " = ?", new String[]{point.getNom()});
-    }
-
-    public void updateParties(Point ancienPoint, Point nouveauPoint) {
+    public void updateParties(Point ancienPoint, Point nouveauPoint,int dataSet) {
         ContentValues cv = new ContentValues();
         cv.put(DataAccess.COL_POINT, nouveauPoint.getNom());
-        db.update(DataAccess.TABLE_GAME, cv, DataAccess.COL_POINT + " = ?", new String[]{ancienPoint.getNom()});
+        db.update(DataAccess.TABLE_GAME, cv, DataAccess.COL_POINT + " = ? AND " + DataAccess.COL_DATASET + " = ?", new String[]{ancienPoint.getNom(),String.valueOf(dataSet)});
     }
 
-    public void updateScores(Joueur ancienJoueur, Joueur nouveauJoueur) {
-        ContentValues cv = new ContentValues();
-        cv.put(DataAccess.COL_NOM_JOUEUR, nouveauJoueur.getNom());
-        db.update(DataAccess.TABLE_SCORE, cv, DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{ancienJoueur.getNom()});
+    public void deletePartiesPoint(Point pointAEffacer,int dataSet) {
+        db.delete(DataAccess.TABLE_GAME, DataAccess.COL_POINT + " = ? AND " + DataAccess.COL_DATASET + " = ?", new String[]{pointAEffacer.getNom(),String.valueOf(dataSet)});
     }
 
-    public void deleteJoueurScores(Joueur joueurAEffacer) {
-        db.delete(DataAccess.TABLE_SCORE, DataAccess.COL_NOM_JOUEUR + " = ?", new String[]{joueurAEffacer.getNom()});
+    public void clearData(int dataSet) {
+        db.delete(DataAccess.TABLE_GAME, DataAccess.COL_DATASET + " = ?", new String[]{String.valueOf(dataSet)});
     }
 
-    public void deletePartiesPoint(Point pointAEffacer) {
-        db.delete(DataAccess.TABLE_GAME, DataAccess.COL_POINT + " = ?", new String[]{pointAEffacer.getNom()});
+    public void deletePartie(Partie partie, int dataSet) {
+        db.delete(DataAccess.TABLE_GAME, DataAccess.COL_DATE + " = ? AND " + DataAccess.COL_DATASET + " = ?", new String[]{partie.getTemps().toString(),String.valueOf(dataSet)});
     }
 
-    public void clearData() {
-        db.delete(DataAccess.TABLE_GAME, null, null);
-        db.delete(DataAccess.TABLE_SCORE, null, null);
-    }
-
-    public void deletePartie(Partie partie) {
-        db.delete(DataAccess.TABLE_GAME, DataAccess.COL_DATE + " = ?", new String[]{partie.getTemps().toString()});
-    }
-
-    public void deleteScore(Score score) {
-        db.delete(DataAccess.TABLE_SCORE, DataAccess.COL_DATE + " = ?", new String[]{score.getTemps().toString()});
-    }
-
-    public int getCouleurGraphique() {
-        String[] colonnes = {DataAccess.COL_NUMERO};
-        Cursor cursor = db.rawQuery("select * from couleur",null);
+    public int fetchCouleurGraphique() {
+        String[] colonnes = {DataAccess.COL_NOM, DataAccess.COL_VALEUR};
+        String[] selArgs = {DataAccess.PREFERENCES_COULEUR};
+        Cursor cursor = db.query(DataAccess.TABLE_PREFERENCES, colonnes, DataAccess.COL_NOM + " = ?", selArgs, null, null, null);
         cursor.moveToFirst();
         int color = 0;
         if (!cursor.isAfterLast()) {
-            color = cursor.getInt(0);
+            color = cursor.getInt(1);
         }
         cursor.close();
         return color;
     }
 
-    public void setCouleurGraphique(int couleur) {
+    public void updateCouleurGraphique(int valeur) {
         ContentValues cv = new ContentValues();
-        cv.put(DataAccess.COL_NUMERO,couleur);
-        db.insert(DataAccess.TABLE_COULEUR,null,cv);
+        cv.put(DataAccess.COL_VALEUR, valeur);
+        String[] whereArgs = {DataAccess.PREFERENCES_COULEUR};
+        db.update(DataAccess.TABLE_PREFERENCES, cv, DataAccess.COL_NOM + " = ?", whereArgs);
+    }
+
+    public int fetchDataSetActuelId() {
+        String[] colonnes = {DataAccess.COL_NOM, DataAccess.COL_VALEUR};
+        String[] selArgs = {DataAccess.PREFERENCES_DATASET};
+        Cursor cursor = db.query(DataAccess.TABLE_PREFERENCES, colonnes, DataAccess.COL_NOM + " = ?", selArgs, null, null, null);
+        cursor.moveToFirst();
+        int color = 0;
+        if (!cursor.isAfterLast()) {
+            color = cursor.getInt(1);
+        }
+        cursor.close();
+        return color;
+    }
+
+    public void updateDataSetActuel(int i) {
+        ContentValues cv = new ContentValues();
+        cv.put(DataAccess.COL_VALEUR, i);
+        String[] whereArgs = {DataAccess.PREFERENCES_DATASET};
+        db.update(DataAccess.TABLE_PREFERENCES, cv, DataAccess.COL_NOM + " = ?", whereArgs);
+    }
+
+    public ArrayList<String> fetchNomsDataSets() {
+        ArrayList<String> noms = new ArrayList<>(4);
+        String[] colonnes = {DataAccess.COL_ID, DataAccess.COL_NOM};
+        Cursor cursor = db.query(DataAccess.TABLE_DATASET, colonnes, null, null, null, null, DataAccess.COL_ID);
+        cursor.moveToNext();
+        while (!cursor.isAfterLast()) {
+            noms.add(cursor.getString(1));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return noms;
+    }
+
+    public void insertPoint(Point point, int dataSet) {
+        ContentValues cv = point.getContentValues(dataSet);
+        db.insert(DataAccess.TABLE_POINT, null, cv);
+    }
+
+    public boolean firstRun() {
+        String[] colonnes = {DataAccess.COL_VALEUR};
+        String[] selectionAgrs = {DataAccess.PREFERENCES_FIRST_RUN};
+        Cursor cursor = db.query(DataAccess.TABLE_PREFERENCES, colonnes, DataAccess.COL_NOM + " = ?", selectionAgrs, null, null, null);
+        cursor.moveToNext();
+        boolean firstRun = cursor.getInt(0) == 0;
+        cursor.close();
+        return firstRun;
+    }
+
+    public void updateFirstRun() {
+        ContentValues cv = new ContentValues();
+        cv.put(DataAccess.COL_VALEUR,0);
+        String[] whereArgs = {DataAccess.PREFERENCES_FIRST_RUN};
+        db.update(DataAccess.TABLE_PREFERENCES,cv,DataAccess.COL_NOM + " = ?", whereArgs);
+    }
+
+    public ArrayList<Point> fetchAllPoints(int dataSet) {
+        ArrayList<Point> points = new ArrayList<>(0);
+        Point point;
+        String[] selArgs = {String.valueOf(dataSet)};
+        Cursor cursor = db.query(DataAccess.TABLE_POINT, Point.getColonnes(), DataAccess.COL_DATASET + " = ?", selArgs, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            try {
+                point = Point.factoryFromCursor(cursor);
+                points.add(point);
+            } catch (ParseException e) {
+                Toast.makeText(context, R.string.DateIncorrecte, Toast.LENGTH_SHORT).show();
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return points;
+    }
+
+    public void updateNomDataSet(String nouveauNom, int dataSetActuel) {
+        ContentValues cv = new ContentValues();
+        cv.put(DataAccess.COL_NOM,nouveauNom);
+        String[] whereArgs = {String.valueOf(dataSetActuel)};
+        db.update(DataAccess.TABLE_DATASET,cv,DataAccess.COL_ID + " = ?",whereArgs);
     }
 }

@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FortniteTool">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2562936967667595~5192260193"/>
         <activity
             android:name="activity.MainActivity"
             android:exported="true"

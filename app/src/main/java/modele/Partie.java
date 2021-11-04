@@ -10,10 +10,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 import data.DataAccess;
-import utils.Persistable;
 import utils.TimestampParser;
 
-public class Partie implements Persistable {
+public class Partie{
     private Timestamp temps;
     private String pointAmeliorer;
 
@@ -42,27 +41,25 @@ public class Partie implements Persistable {
         this.pointAmeliorer = pointAmeliorer;
     }
 
-    @Override
-    public ContentValues getContentValues() {
+
+    public ContentValues getContentValues(int dataSet) {
         ContentValues cv = new ContentValues();
         cv.put(DataAccess.COL_POINT, this.getPointAmeliorer());
         cv.put(DataAccess.COL_DATE, this.getTemps().toString());
+        cv.put(DataAccess.COL_DATASET,dataSet );
         return cv;
     }
 
-    @Override
     public String getTableName() {
         return DataAccess.TABLE_GAME;
     }
 
-    @Override
     public String[] getColonnes() {
         String[] colonnes = {DataAccess.COL_POINT,DataAccess.COL_DATE};
         return colonnes;
     }
 
-    @Override
-    public Persistable factoryFromCursor(Cursor cursor) throws ParseException {
+    public Partie factoryFromCursor(Cursor cursor) throws ParseException {
         String point = cursor.getString(0);
         String date = cursor.getString(1);
         Timestamp timestamp = TimestampParser.parse(date);

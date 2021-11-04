@@ -4,11 +4,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import data.DataAccess;
-import utils.Persistable;
 
-public class Point implements Persistable {
+public class Point{
     private String nom;
 
     public Point() {
@@ -18,26 +18,27 @@ public class Point implements Persistable {
         this.nom = nom;
     }
 
-    @Override
-    public ContentValues getContentValues() {
+    public static ArrayList<String> toArrayString(ArrayList<Point> persistables){
+        ArrayList<String> arrayListString= new ArrayList<>(0);
+        for (Point point : persistables){
+            arrayListString.add(point.toString());
+        }
+        return arrayListString;
+    }
+
+    public ContentValues getContentValues(int dataSet) {
         ContentValues cv = new ContentValues();
         cv.put(DataAccess.COL_NOM_POINT,this.nom);
+        cv.put(DataAccess.COL_DATASET,dataSet);
         return cv;
     }
 
-    @Override
-    public String getTableName() {
-        return DataAccess.TABLE_POINT;
-    }
-
-    @Override
-    public String[] getColonnes() {
-        String[] colonnes = {DataAccess.COL_NOM_POINT};
+    public static String[] getColonnes() {
+        String[] colonnes = {DataAccess.COL_NOM_POINT,DataAccess.COL_DATASET};
         return colonnes;
     }
 
-    @Override
-    public Persistable factoryFromCursor(Cursor cursor) throws ParseException {
+    public static Point factoryFromCursor(Cursor cursor) throws ParseException {
         String nom = cursor.getString(0);
         Point point = new Point(nom);
         return point;

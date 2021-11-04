@@ -45,4 +45,7 @@
     <string name="vert">GREEN</string>
     <string name="jaune">YELLOW</string>
     <string name="dataset">DataSet</string>
+    <string name="rename">Rename</string>
+    <string name="back">Back</string>
+    <string name="renommer">Rename</string>
 </resources>

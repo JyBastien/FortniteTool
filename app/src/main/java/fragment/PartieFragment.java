@@ -15,6 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fortnitetool.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -22,9 +27,8 @@ import java.util.Calendar;
 
 import activity.MainActivity;
 import modele.Partie;
-import modele.Score;
+import modele.Point;
 import utils.AbstractOnItemListener;
-import utils.Persistable;
 import utils.Validateur;
 
 
@@ -49,6 +53,9 @@ public class PartieFragment extends Fragment {
     private int points = PAS_SCORE;
     private ArrayList<String> nomJoueurs;
     private ArrayList<String> pointsAmeliorer;
+    private AdView pub;
+
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -78,9 +85,11 @@ public class PartieFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_partie, container, false);
         MainActivity activity = (MainActivity) getActivity();
        // nomJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object)activity.getJoueurs());
-        pointsAmeliorer = Persistable.toArrayString((ArrayList<Persistable>) (Object)activity.getPoints());
+        pointsAmeliorer = Point.toArrayString(activity.getPoints());
         setWidgets(view);
         setListeners();
+        initialiserPub(view);
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -96,6 +105,16 @@ public class PartieFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 pointAmeliorer = cmbRaison.getSelectedItem().toString();
             }});
+    }
+    private void initialiserPub(View view) {
+        MobileAds.initialize(view.getContext(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        pub = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        pub.loadAd(adRequest);
     }
     private void enregistrerFormulaire() {
         int reponse = Validateur.verifierFormulaire(this);
@@ -117,13 +136,7 @@ public class PartieFragment extends Fragment {
         MainActivity activity = (MainActivity) getActivity();
         activity.ajouterPartie(partie);
     }
-    private void enregistrerScore() {
-        Timestamp temps = new Timestamp(Calendar.getInstance().getTime().getTime());
-        Score score = new Score(temps, nomjoueur, points);
-        MainActivity activity = (MainActivity) getActivity();
-        activity.ajouterScore(score);
-        txtScore.setText("");
-    }
+
     private void setWidgets(View view) {
         cmbRaison = (Spinner) view.findViewById(R.id.cmbRaisons);
         btnEnregistrer = view.findViewById(R.id.btnEnregistrer);

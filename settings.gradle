@@ -9,6 +9,5 @@ dependencyResolutionManagement {
     }
 }
 
-
 rootProject.name = "FortniteTool"
 include ':app'

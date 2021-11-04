@@ -9,17 +9,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.fortnitetool.R;
 
 import activity.MainActivity;
-import modele.Joueur;
 import modele.Point;
 
 /**
@@ -29,6 +25,7 @@ import modele.Point;
  */
 public class ModifierElementFragment extends Fragment {
 
+    public static final String DATASET = "DataSet";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,6 +40,7 @@ public class ModifierElementFragment extends Fragment {
     private EditText txtNouveauNom;
     private Button btnEnregistrer;
     private Button btnEffacer;
+    private Button btnRetour;
     private MainActivity activity;
 
     public ModifierElementFragment() {
@@ -91,18 +89,29 @@ public class ModifierElementFragment extends Fragment {
         return view;
     }
 
+    private void setWidgets(View view) {
+        this.txtNomOriginal = view.findViewById(R.id.txtNomElementOriginal);
+        this.txtNouveauNom = view.findViewById(R.id.txtNouveauNomElement);
+        this.btnEnregistrer = view.findViewById(R.id.btnEnregistrerMods);
+        this.btnEffacer = view.findViewById(R.id.btnEffacerMods);
+        if (this.type.equals(DATASET)) {
+            this.btnEffacer.setVisibility(View.GONE);
+        }
+        this.btnRetour = view.findViewById(R.id.btnRetour);
+        this.activity = (MainActivity) this.getActivity();
+    }
+
     private void setListeners() {
         btnEnregistrer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String nouveauNom = txtNouveauNom.getText().toString().trim();
                 if (!nouveauNom.equals("")) {
-                    if (type.equals(getResources().getString(R.string.points_am_liorer))) {
+                    if (ModifierElementFragment.this.type.equals(DATASET)){
+                        activity.modifierNomDataSet(nouveauNom);
+                    }else {
                         Point ancienPoint = new Point(nomElement);
                         activity.modifierPoint(ancienPoint, nouveauNom);
-                    } else {
-                        Joueur ancienJoueur = new Joueur(nomElement);
-                        activity.modifierJoueur(ancienJoueur, nouveauNom);
                     }
                 }
             }
@@ -111,6 +120,12 @@ public class ModifierElementFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 dialogueConfirmation();
+            }
+        });
+        btnRetour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.remplacerFragment(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
             }
         });
     }
@@ -122,18 +137,11 @@ public class ModifierElementFragment extends Fragment {
         confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (type.equals(getResources().getString(R.string.points_am_liorer))) {
-                    if(activity.getPoints().size()>1) {
-                        activity.effacerPoint(nomElement);
-                    }else{
-                        alertDialogueMessage(getString(R.string.impossibleEffacerDernier) + getResources().getString(R.string.point_am_liorer));
-                    }
+
+                if (activity.getPoints().size() > 1) {
+                    activity.effacerPoint(nomElement);
                 } else {
-                    if(activity.getJoueurs().size()>1) {
-                        activity.effacerJoueur(nomElement);
-                    }else{
-                        alertDialogueMessage(R.string.impossibleEffacerDernier + getResources().getString(R.string.joueur));
-                    }
+                    alertDialogueMessage(getString(R.string.impossibleEffacerDernier) + getResources().getString(R.string.point_am_liorer));
                 }
                 dialogInterface.dismiss();
             }
@@ -161,15 +169,9 @@ public class ModifierElementFragment extends Fragment {
     }
 
     private void setValues() {
-        this.txtNomOriginal.setText(this.nomElement);
+        this.txtNomOriginal.setText(R.string.renommer);
         txtNouveauNom.setText(this.nomElement);
     }
 
-    private void setWidgets(View view) {
-        this.txtNomOriginal = view.findViewById(R.id.txtNomElementOriginal);
-        this.txtNouveauNom = view.findViewById(R.id.txtNouveauNomElement);
-        this.btnEnregistrer = view.findViewById(R.id.btnEnregistrerMods);
-        this.btnEffacer = view.findViewById(R.id.btnEffacerMods);
-        this.activity = (MainActivity) this.getActivity();
-    }
+
 }
