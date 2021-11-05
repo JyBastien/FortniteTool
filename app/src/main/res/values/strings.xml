@@ -39,11 +39,11 @@
     <string name="liste_parties">Session List</string>
     <string name="aucuneDonnee">No Saved Date, Start by adding Data in the Game Tab</string>
     <string name="couleur_du_graphique">Graph\'s Color</string>
-    <string name="cyan">CYAN</string>
-    <string name="rouge">RED</string>
-    <string name="bleu">BLUE</string>
-    <string name="vert">GREEN</string>
-    <string name="jaune">YELLOW</string>
+    <string name="cyan">Cyan</string>
+    <string name="rouge">Red</string>
+    <string name="bleu">Blue</string>
+    <string name="vert">Green</string>
+    <string name="jaune">Yellow</string>
     <string name="dataset">DataSet</string>
     <string name="rename">Rename</string>
     <string name="back">Back</string>

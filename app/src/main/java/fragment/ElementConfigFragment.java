@@ -15,10 +15,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.fortnitetool.R;
+import com.skydoves.powerspinner.OnSpinnerItemSelectedListener;
+import com.skydoves.powerspinner.PowerSpinnerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +39,8 @@ public class ElementConfigFragment extends Fragment {
     private ListView listeElementView;
     private Button btnAjouter;
     private Button btnRenommer;
-    private Spinner cmbCouleur;
-    private Spinner cmbDataSet;
+    private PowerSpinnerView cmbCouleur;
+    private PowerSpinnerView cmbDataSet;
     private ArrayList<String> arrayCouleurs;
     private ArrayList<Integer> COULEURS = new ArrayList<>(Arrays.asList(Color.CYAN, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW));
     private boolean listener = false;
@@ -79,16 +82,16 @@ public class ElementConfigFragment extends Fragment {
         ArrayList<String> nomsDataSets = activity.getNomsDataSets();
         ArrayAdapter<String> adapteur = new ArrayAdapter<>(view.getContext(), R.layout.spinner, nomsDataSets);
         adapteur.setDropDownViewResource(R.layout.spinner_drop_down);
-        cmbDataSet.setAdapter(adapteur);
-        cmbDataSet.setSelection(activity.getDataSetActuel());
+        cmbDataSet.setItems(nomsDataSets);
+        cmbDataSet.selectItemByIndex(activity.getDataSetActuel());
     }
 
     private void initialiserCmbCouleur(View view) {
         this.cmbCouleur = view.findViewById(R.id.cmbCouleur);
         ArrayAdapter<String> adapteur = new ArrayAdapter<String>(view.getContext(), R.layout.spinner, arrayCouleurs);
         adapteur.setDropDownViewResource(R.layout.spinner_drop_down);
-        cmbCouleur.setAdapter(adapteur);
-        cmbCouleur.setSelection(COULEURS.indexOf(activity.getCouleurGraphique()));
+        cmbCouleur.setItems(arrayCouleurs);
+        cmbCouleur.selectItemByIndex(COULEURS.indexOf(activity.getCouleurGraphique()));
     }
 
     public void initialiserListePoints() {
@@ -115,7 +118,7 @@ public class ElementConfigFragment extends Fragment {
         btnRenommer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nomElement = cmbDataSet.getSelectedItem().toString();
+                String nomElement = activity.getNomsDataSets().get(cmbDataSet.getSelectedIndex());
                 activity.remplacerFragment(new ModifierElementFragment(ModifierElementFragment.DATASET, nomElement));
             }
         });
@@ -129,19 +132,29 @@ public class ElementConfigFragment extends Fragment {
                 activity.remplacerFragment(new ModifierElementFragment(ElementConfigFragment.this.titre, nomElement));
             }
         });
-        cmbCouleur.setOnItemSelectedListener(new AbstractOnItemListener() {
+        cmbCouleur.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                activity.setCouleurGraphique(COULEURS.get(i));
+            public void onItemSelected(int i, @Nullable String s, int newIndex, String t1) {
+                activity.setCouleurGraphique(COULEURS.get(newIndex));
             }
         });
-        cmbDataSet.setOnItemSelectedListener(new AbstractOnItemListener() {
+        cmbDataSet.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener<String>() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                activity.setDataSet(i);
+            public void onItemSelected(int i, @Nullable String s, int newIndex, String t1) {
+                activity.setDataSet(newIndex);
                 initialiserListePoints();
             }
         });
+
+
+
+//        cmbDataSet.setOnItemSelectedListener(new AbstractOnItemListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                activity.setDataSet(i);
+//                initialiserListePoints();
+//            }
+//        });
     }
 
 
@@ -169,6 +182,11 @@ public class ElementConfigFragment extends Fragment {
     private void insertNouveauElement(String reponse) {
         activity.ajouterPoint(new Point(reponse));
         initialiserListePoints();
+    }
+
+    public void dismiss(){
+        this.cmbDataSet.dismiss();
+        this.cmbCouleur.dismiss();
     }
 
 

@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import data.DbAdapter;
-import fragment.ConfigFragment;
 import fragment.ElementConfigFragment;
 import fragment.PartieFragment;
 
@@ -179,24 +178,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                fragment = null;
+                Fragment nouveauFragment = null;
 
                 switch (tab.getPosition()) {
                     case 0: {
-                        fragment = new PartieFragment();
+                        nouveauFragment = new PartieFragment();
                         break;
                     }
                     case 1: {
-                        fragment = new StatsFragment();
+                        nouveauFragment = new StatsFragment();
                         break;
                     }
                     case 2: {
-                        fragment = new ElementConfigFragment(getResources().getString(R.string.points_am_liorer));
+                        nouveauFragment = new ElementConfigFragment(getResources().getString(R.string.points_am_liorer));
                         break;
                     }
                 }
-
-                remplacerFragment(fragment);
+                remplacerFragment(nouveauFragment);
             }
 
             @Override
@@ -212,11 +210,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void remplacerFragment(Fragment fragment) {
+        if (this.fragment != null){
+            if (this.fragment instanceof PartieFragment){
+                PartieFragment partieFragment = (PartieFragment) this.fragment;
+                partieFragment.dismiss();
+            }else if (this.fragment instanceof ElementConfigFragment){
+                ElementConfigFragment elementConfigFragment = (ElementConfigFragment) this.fragment;
+                elementConfigFragment.dismiss();
+            }
+        }
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainerViewMainActivity, fragment);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
+        this.fragment = fragment;
     }
 
     public void ajouterPartie(Partie partie) {

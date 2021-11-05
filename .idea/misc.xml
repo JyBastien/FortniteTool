@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.24479166666666666" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/drawable/ic_launcher_background.xml" value="0.24479166666666666" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/activity_main.xml" value="0.23867753623188406" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/activity_menu.xml" value="0.24003623188405798" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/activity_partie.xml" value="0.20520833333333333" />
@@ -26,6 +28,7 @@
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/menulayout.xml" value="0.24003623188405798" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/message_bienvenu.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/spinner.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/spinner_bg.xml" value="0.22864583333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/spinner_drop_down.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/tite_bar.xml" value="0.22864583333333333" />
         <entry key="..\:/Users/ThinkCenter/AndroidStudioProjects/FortniteTool/app/src/main/res/layout/titre_bar.xml" value="0.36666666666666664" />
