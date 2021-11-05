@@ -7,10 +7,12 @@ import android.graphics.Color;
 
 import androidx.annotation.Nullable;
 
+import com.example.fortnitetool.R;
+
 import activity.MainActivity;
 
 public class DataAccess extends SQLiteOpenHelper {
-    public final static String BD_NOM = "FortniteTool11";
+    public final static String BD_NOM = "FortniteTool13";
 
     public final static String TABLE_DATASET = "DataSet";
     //  col - id , col - nom
@@ -51,18 +53,17 @@ public class DataAccess extends SQLiteOpenHelper {
             COL_NOM_POINT + " TEXT, " +
             COL_DATASET + " INTEGER, " +
             "PRIMARY KEY(" +  COL_NOM_POINT + "," + COL_DATASET + "))";
-
-
-
-
     public final static int VERSION = 10;
+    private Context context;
 
     public DataAccess(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        String[] POINTS_INITIAUX = {context.getResources().getString(R.string.complexite),context.getResources().getString(R.string.fournisseur),context.getResources().getString(R.string.imprevu)};
         sqLiteDatabase.execSQL(GAME_DDl);
         sqLiteDatabase.execSQL(POINT_DDl);
         sqLiteDatabase.execSQL(PREFERENCE_DDL);
@@ -74,7 +75,7 @@ public class DataAccess extends SQLiteOpenHelper {
         int idDataSet = 0;
         for (String nomData : MainActivity.NOMS_DATASET_INITIAUX) {
             sqLiteDatabase.execSQL("insert into " + TABLE_DATASET + " values(" + idDataSet + ",'" + nomData + "')");
-            for (String nomPoint : MainActivity.POINTS_INITIAUX) {
+            for (String nomPoint : POINTS_INITIAUX) {
                 //line of error
                 sqLiteDatabase.execSQL("insert into " + TABLE_POINT + " values('" + nomPoint.replaceAll("'","''") + "'," + idDataSet + ")");
             }
@@ -87,6 +88,5 @@ public class DataAccess extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         //tout inclure dans le on create avant la line of error
-
     }
 }

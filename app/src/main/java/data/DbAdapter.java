@@ -167,7 +167,7 @@ public class DbAdapter {
         String[] selectionAgrs = {DataAccess.PREFERENCES_FIRST_RUN};
         Cursor cursor = db.query(DataAccess.TABLE_PREFERENCES, colonnes, DataAccess.COL_NOM + " = ?", selectionAgrs, null, null, null);
         cursor.moveToNext();
-        boolean firstRun = cursor.getInt(0) == 0;
+        boolean firstRun = cursor.getInt(0) == 1;
         cursor.close();
         return firstRun;
     }

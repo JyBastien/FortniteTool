@@ -19,7 +19,7 @@
     <string name="ramp_up">Analyse Ramp-Up</string>
     <string name="clear_data">Effacer Données</string>
     <string name="ajouterNouveau">Ajouter un nouveau\ </string>
-    <string name="bienvenu_message">Bienvenu à l\'Analyse Ramp-up qui traque les points à améliorée d\'un processus et qui affiche ensuite les statistiques. Ajoutez des Points à Améliorer dans l\'onglet Config avant de commencer!</string>
+    <string name="bienvenu_message">Bienvenu à l\'Analyse Ramp-up qui traque les points à améliorer d\'un processus et affiche ensuite les statistiques. Modifiez et/ou Ajoutez des Points à Améliorer dans l\'onglet Config avant de commencer! Vous pouvez voir les statistiques globalement (le ratio des 6 points les plus récurrents) ou regroupés par jours/semaines and afficher le point le plus récurrent de cette journée/semaine. Vous pouvez utiliser plusier dataset et les renommer à votre guise dans l\'onglet Config</string>
     <string name="ok">OK</string>
     <string name="effacer">Effacer</string>
     <string name="effacerStatistiques">Voulez-vous vraiment Effacer toutes les Données Statistiques? Cette opération est Irréversible</string>
@@ -48,4 +48,8 @@
     <string name="rename">Renommer</string>
     <string name="back">Retour</string>
     <string name="renommer">Renommer</string>
+    <string name="complexite">Mal évalué la complexité</string>
+    <string name="fournisseur">Retard d\'un fournisseur</string>
+    <string name="imprevu">Imprévu</string>
+    <string name="dejaDansListe">Le point que vous essayez d\'entrer se trouve déjà dans la liste!</string>
 </resources>

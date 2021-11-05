@@ -39,11 +39,11 @@ public class ElementConfigFragment extends Fragment {
     private ListView listeElementView;
     private Button btnAjouter;
     private Button btnRenommer;
+    private Button btnHelp;
     private PowerSpinnerView cmbCouleur;
     private PowerSpinnerView cmbDataSet;
     private ArrayList<String> arrayCouleurs;
     private ArrayList<Integer> COULEURS = new ArrayList<>(Arrays.asList(Color.CYAN, Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW));
-    private boolean listener = false;
 
 
     public ElementConfigFragment(String titre) {
@@ -72,6 +72,7 @@ public class ElementConfigFragment extends Fragment {
         txtTitre.setText(this.titre);
         btnAjouter = view.findViewById(R.id.btnAjouter);
         btnRenommer = view.findViewById(R.id.btnRenommer);
+        btnHelp = view.findViewById(R.id.btnHelp);
         initialiserListePoints();
         initialiserCmbCouleur(view);
         initialiserCmbDataSet(view);
@@ -120,6 +121,12 @@ public class ElementConfigFragment extends Fragment {
             public void onClick(View view) {
                 String nomElement = activity.getNomsDataSets().get(cmbDataSet.getSelectedIndex());
                 activity.remplacerFragment(new ModifierElementFragment(ModifierElementFragment.DATASET, nomElement));
+            }
+        });
+        btnHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.alertDialogueMessageBienvenu(view.getContext().getResources().getString(R.string.bienvenu_message));
             }
         });
     }
@@ -180,8 +187,19 @@ public class ElementConfigFragment extends Fragment {
     }
 
     private void insertNouveauElement(String reponse) {
-        activity.ajouterPoint(new Point(reponse));
-        initialiserListePoints();
+        boolean trouve = false;
+        for (Point point : activity.getPoints()){
+            if (point.getNom().equals(reponse)) {
+                trouve = true;
+            }
+        }
+        if (!trouve) {
+            activity.ajouterPoint(new Point(reponse));
+            initialiserListePoints();
+        }
+        else {
+            Toast.makeText(activity, activity.getResources().getString(R.string.dejaDansListe), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void dismiss(){

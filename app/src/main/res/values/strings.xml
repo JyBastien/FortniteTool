@@ -17,7 +17,7 @@
     <string name="points_am_liorer">Fields to improve</string>
     <string name="joueurs">Players</string>
     <string name="ramp_up">Ramp-Up Analysis</string>
-    <string name="bienvenu_message">Welcome to Ramp-Up Analyzer and track Fields you need to improve in your Processes and Visualize Results on Visual Graphics in the Stats Panel. Start by adding Fields to Improve in the Config Panel!</string>
+    <string name="bienvenu_message">Welcome to Ramp-Up Analyzer and track fields you need to improve in your processes and visualize results on graphs in the Stats Panel. Start by adding/modifying Fields to Improve in the Config Panel! You can view results globally (ratio of the 6 most occurent fields) or grouped by last 6 days/weeks and show the most occurent field in that day/week. You can have multiple datasets and rename them as you wish in the config panel.</string>
     <string name="ajouterNouveau">Add a New\ </string>
     <string name="clear_data">Clear Data</string>
     <string name="ok">OK</string>
@@ -48,4 +48,8 @@
     <string name="rename">Rename</string>
     <string name="back">Back</string>
     <string name="renommer">Rename</string>
+    <string name="complexite">Underevaluated the Complexity Level</string>
+    <string name="fournisseur">Supplier not on time</string>
+    <string name="imprevu">Unexpected event</string>
+    <string name="dejaDansListe">The field you are trying to add is already in the list!</string>
 </resources>

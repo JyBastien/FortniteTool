@@ -27,7 +27,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-
         <ListView
             android:id="@+id/lstElementConfig"
             android:layout_width="407dp"
@@ -39,16 +38,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtTitreConfig" />
 
-        <Button
-            android:id="@+id/btnAjouter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="36dp"
-            android:layout_marginRight="50sp"
-            android:text="@string/nouveau"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lstElementConfig" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/btnAjouter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:text="@string/nouveau"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnHelp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="\?"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/textViewColor"

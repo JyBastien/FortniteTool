@@ -39,7 +39,6 @@ import java.util.Date;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String[] POINTS_INITIAUX = {"Mal évalué la complexité","Retard d'un fournisseur","Imprévu"};
     public static final String[] NOMS_DATASET_INITIAUX = {"DataSetA","DataSetB","DataSetC","DataSetD"};
 
     private DbAdapter dbAdapter;
@@ -56,10 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private AdView pub;
 
     //todo clean code
-    //todo ajouter login firebase
-    //todo ajouter data firebase
     //todo ajouter check avant dajouter un nouveau point , le pk va faire plantert si on entre 2 fois pareil
-    //test ajouter un point avec apostrphes ou caracteres illégaux
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         dbAdapter.fermerBd();
     }
 
-    private void alertDialogueMessageBienvenu(String message) {
+    public void alertDialogueMessageBienvenu(String message) {
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogLayout = inflater.inflate(R.layout.message_bienvenu,null);
