@@ -1,11 +1,9 @@
 package utils;
 
 import fragment.PartieFragment;
-
+/*Classe qui s'assure que le point à améliorer est inclus dans le fragment*/
 public class Validateur {
-    public static final int PAS_POINT_AMELIORER = 4;
-    public static final int PAS_DE_SCORE = 3;
-    public static final int PAS_DE_JOUEUR = 2;
+    public static final int PAS_POINT_AMELIORER = 0;
     public static final int SUCCES = 1;
 
     public static int verifierFormulaire(PartieFragment partieFragment) {

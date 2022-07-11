@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.example.fortnitetool.R;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -40,12 +39,14 @@ import activity.MainActivity;
 import modele.Entree;
 import modele.Partie;
 import modele.Stats;
+import utils.AbstractOnTabSelectedListener;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link StatsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+/*Fragment qui contient le graphique et la liste des objets parties enregistrés*/
 public class StatsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -67,7 +68,6 @@ public class StatsFragment extends Fragment {
 
 
     public StatsFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -78,7 +78,6 @@ public class StatsFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment StatsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static StatsFragment newInstance(String param1, String param2) {
         StatsFragment fragment = new StatsFragment();
         Bundle args = new Bundle();
@@ -87,7 +86,6 @@ public class StatsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,11 +103,11 @@ public class StatsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_stats, container, false);
         setWidgets(view);
         setListeners(view);
-        remplirStatsParties();
+        remplirListeParties();
         return view;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    /*associe les objets graphiques aux attributs correspondants de la classe*/
     private void setWidgets(View view) {
         txtChartDescription = view.findViewById(R.id.txtChartDescription);
         //associer l'activity main a la propriété activity
@@ -118,67 +116,19 @@ public class StatsFragment extends Fragment {
         //monter la liste des parties enregistrées
         listeParties = view.findViewById(R.id.lstParties);
         listeParties.setNestedScrollingEnabled(true);
-        ArrayAdapter<String> adapteur;
-
-        //attacher la liste de joueur
-        //cmbJoueurs = view.findViewById(R.id.cmbJoueurs);
-       // ArrayList<String> listeJoueurs = Persistable.toArrayString((ArrayList<Persistable>) (Object) mainActivity.getJoueurs());
-      //  adapteur = new ArrayAdapter<String>(mainActivity, R.layout.support_simple_spinner_dropdown_item, listeJoueurs);
-
-        //     cmbJoueurs.setAdapter(adapteur);
-        //     String nomJoueur = cmbJoueurs.getSelectedItem().toString();
-
-        //monter la liste des scores enregistrées selon le nom de joueur
-        //listeScores = view.findViewById(R.id.lstScores);
-        //   remplirStatsJoueur(nomJoueur);
-
         chart = view.findViewById(R.id.chart);
         ArrayList<Partie> parties = mainActivity.getParties();
-        if (parties.size() > 0){
+        if (parties.size() > 0) {
             showBArChartTout(parties);
-        }else {
+        } else {
             btnClearData.setEnabled(false);
             Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
         }
         tabLayout = view.findViewById(R.id.tabLayoutGraphs);
     }
 
-
-    private void remplirObjetsGraphique(ArrayList<Entree> entrees, ArrayList<BarEntry> barEntries, ArrayList<String> points, int qteTotal) {
-        String texte;
-        Entree entree;
-        for (int i = 0; i < entrees.size() && i < 6; i++) {
-            entree = entrees.get(i);
-            float ratio = (float) entree.getQte() / qteTotal * 100;
-            barEntries.add(new BarEntry(i, ratio));
-            texte = entree.getTexte().length() > 10 ? entree.getTexte().substring(0, 10) : entree.getTexte();
-            points.add(texte);
-        }
-    }
-
-    private ArrayList<Entree> listEntreeBuilderFromStatsBuilder(HashMap<String, Integer> statsBuilder) {
-        ArrayList<Entree> entrees = new ArrayList<>(statsBuilder.size());
-        for (Map.Entry<String, Integer> stats : statsBuilder.entrySet()) {
-            entrees.add(new Entree(stats.getKey(), stats.getValue()));
-        }
-        return entrees;
-    }
-
-    private HashMap<String, Integer> statsBuilderDeParties(ArrayList<Partie> parties) {
-        HashMap<String, Integer> statsBuilder = new HashMap<>();
-        String pointAmeliorer;
-        int qte;
-        for (Partie partie : parties) {
-            pointAmeliorer = partie.getPointAmeliorer();
-            if (statsBuilder.containsKey(pointAmeliorer)) {
-                qte = statsBuilder.get(pointAmeliorer) + 1;
-            } else {
-                qte = 1;
-            }
-            statsBuilder.put(pointAmeliorer, qte);
-        }
-        return statsBuilder;
-    }
+    /*affichera dans le composant graphique les 6 points les plus récurrents et la hauteur des colonnes
+     * représentara le ration d'occurance */
     private void showBArChartTout(ArrayList<Partie> parties) {
         HashMap<String, Integer> statsBuilder = statsBuilderDeParties(parties);
         ArrayList<Entree> entrees = listEntreeBuilderFromStatsBuilder(statsBuilder);
@@ -195,9 +145,50 @@ public class StatsFragment extends Fragment {
         setChartAttributes();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void showStatsInBarChart(String description, ArrayList<Stats> stats) {
+    /*prends en parametre une liste de parties et construit et retourne  un hashmap
+     * qui aura comme clé le nom du point et comme valeur le nombre d'occurance dans la liste*/
+    private HashMap<String, Integer> statsBuilderDeParties(ArrayList<Partie> parties) {
+        HashMap<String, Integer> statsBuilder = new HashMap<>();
+        String pointAmeliorer;
+        int qte;
+        for (Partie partie : parties) {
+            pointAmeliorer = partie.getPointAmeliorer();
+            if (statsBuilder.containsKey(pointAmeliorer)) {
+                qte = statsBuilder.get(pointAmeliorer) + 1;
+            } else {
+                qte = 1;
+            }
+            statsBuilder.put(pointAmeliorer, qte);
+        }
+        return statsBuilder;
+    }
 
+    /*construit une liste d'Entrées à partir du statsbuilder dans le but de sorter la liste
+     * par valeur */
+    private ArrayList<Entree> listEntreeBuilderFromStatsBuilder(HashMap<String, Integer> statsBuilder) {
+        ArrayList<Entree> entrees = new ArrayList<>(statsBuilder.size());
+        for (Map.Entry<String, Integer> stats : statsBuilder.entrySet()) {
+            entrees.add(new Entree(stats.getKey(), stats.getValue()));
+        }
+        return entrees;
+    }
+
+    /*prends en paramêtre la liste d'entrees, la liste de BarEntries, la lites de points et la quantité totale de points dans la liste d'entrees
+     * et initialise la liste de barEntries et la liste de points à utiliser pour le graphique */
+    private void remplirObjetsGraphique(ArrayList<Entree> entrees, ArrayList<BarEntry> barEntries, ArrayList<String> points, int qteTotal) {
+        String texte;
+        Entree entree;
+        for (int i = 0; i < entrees.size() && i < 6; i++) {
+            entree = entrees.get(i);
+            float ratio = (float) entree.getQte() / qteTotal * 100;
+            barEntries.add(new BarEntry(i, ratio));
+            texte = entree.getTexte().length() > 10 ? entree.getTexte().substring(0, 10) : entree.getTexte();
+            points.add(texte);
+        }
+    }
+
+    /*affiche la liste de stats avec la description fournie en paramètre dans le graphique*/
+    private void showStatsInBarChart(String description, ArrayList<Stats> stats) {
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         ArrayList<String> points = new ArrayList<>();
         String nomPoint;
@@ -207,7 +198,6 @@ public class StatsFragment extends Fragment {
             nomPoint = nomPoint.length() > 6 ? nomPoint.substring(0, 6) : nomPoint;
             points.add(nomPoint);
         }
-
         BarDataSet barDataSet = new BarDataSet(barEntries, "%");
         barDataSet.setValueTextSize(12f);
         barDataSet.setColor(mainActivity.getCouleurGraphique());
@@ -218,12 +208,14 @@ public class StatsFragment extends Fragment {
         setChartAttributes();
     }
 
+    /*initialise l'axe X du graphique à partir de la liste de points fournie en paramètre*/
     private void setCharXAxis(ArrayList<String> points) {
         chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(points));
-        chart.getXAxis().setLabelCount(points.size(),points.size() == 1);
+        chart.getXAxis().setLabelCount(points.size(), points.size() == 1);
         chart.getXAxis().setCenterAxisLabels(points.size() == 1);
     }
 
+    /*initialise les attributs des composants du graphique*/
     private void setChartAttributes() {
         int color = Color.WHITE;
         chart.getLegend().setTextColor(color);
@@ -239,42 +231,31 @@ public class StatsFragment extends Fragment {
         chart.invalidate();
     }
 
+    /*affiche le texte fourni en parametre dans le txtView qui décrit l'information du
+     * graphique et retire la description normalement affichée devant les colonnes*/
     private void setCharDescription(String texte) {
-    txtChartDescription.setText(texte);
-    chart.getDescription().setText("");
+        txtChartDescription.setText(texte);
+        chart.getDescription().setText("");
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void remplirStatsParties() {
+    /*affiche la liste des parties dans le listView du fragment */
+    private void remplirListeParties() {
         ArrayList<Partie> parties = mainActivity.getParties();
         btnClearData.setEnabled(parties.size() > 0);
         ArrayAdapter<String> adapteur = null;
         ArrayList<String> listeStringFormatParties = null;
-
-            //          if (parties.size() < 5) {
-            listeStringFormatParties = partiesToStringEnLigne(parties);
-            //        } else //if (parties.size() < 10)
-            //       {
-            //           listeStringFormatParties = partiesToStringJour();
-            //       }
-            adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.session_liste, listeStringFormatParties);
-            listeParties.setAdapter(adapteur);
-
+        listeStringFormatParties = Partie.partiesToStringEnLigne(parties,mainActivity);
+        adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.session_liste, listeStringFormatParties);
+        listeParties.setAdapter(adapteur);
     }
+    /*attache les listeners sur les objets graphiques*/
     private void setListeners(View view) {
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-
+        tabLayout.addOnTabSelectedListener(new AbstractOnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int i = tab.getPosition();
                 afficherStatsSelonSelectedTab(i);
             }
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
         });
         btnClearData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,17 +263,6 @@ public class StatsFragment extends Fragment {
                 dialogueEffacerConfirmation();
             }
         });
-//        cmbJoueurs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                String nomJoueur = cmbJoueurs.getSelectedItem().toString();
-//                remplirStatsJoueur(nomJoueur);
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
         listeParties.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -301,34 +271,26 @@ public class StatsFragment extends Fragment {
                 return false;
             }
         });
-//        listeScores.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                ArrayList<Score> scores = mainActivity.getScores();
-//                dialogueConfirmation(scores.get(i));
-//                return false;
-//            }
-//        });
     }
-
+    /*affiche les statistiques choisies par l'utilisateur dans le tab layout
+    * et remplit le graphique avec l'information correspondante*/
     private void afficherStatsSelonSelectedTab(int i) {
         switch (i) {
             case 0: {
                 ArrayList<Partie> parties = mainActivity.getParties();
-                if (parties.size() > 0){
+                if (parties.size() > 0) {
                     showBArChartTout(parties);
-                }else {
+                } else {
                     Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
                     chart.clear();
                 }
-
                 break;
             }
             case 1: {
                 ArrayList<Stats> stats = mainActivity.getStatsGrouperJour();
                 if (stats != null && stats.size() > 0) {
                     showStatsInBarChart(getString(R.string.ratioDerniersJours), stats);
-                }else {
+                } else {
                     Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
                     chart.clear();
                 }
@@ -337,20 +299,18 @@ public class StatsFragment extends Fragment {
             case 2: {
                 ArrayList<Stats> stats = mainActivity.getStatsGrouperSemaine();
                 if (stats != null && stats.size() > 0) {
-                    showStatsInBarChart(getString(R.string.rationPointsSemaine),stats);
-                }else {
+                    showStatsInBarChart(getString(R.string.rationPointsSemaine), stats);
+                } else {
                     Toast.makeText(mainActivity, R.string.aucuneDonnee, Toast.LENGTH_SHORT).show();
                     chart.clear();
                 }
-
                 break;
             }
         }
     }
-
-
+    /*demande confirmation pour effacer la partie fournie en paramètre*/
     private void dialogueEffacerConfirmation(Partie partie) {
-        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext(),R.style.confirmDialogueTheme);
+        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext(), R.style.confirmDialogueTheme);
         confirmDeleteDialog.setTitle(R.string.effacer);
         confirmDeleteDialog.setMessage(getString(R.string.voulezEffacerPartie) + " " + partie.getTemps().toString().substring(0, partie.getTemps().toString().length() - 7) + "?");
         confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
@@ -358,7 +318,7 @@ public class StatsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mainActivity.effacerPartie(partie);
-                remplirStatsParties();
+                remplirListeParties();
                 chart.clear();
                 int tabIndex = tabLayout.getSelectedTabPosition();
                 afficherStatsSelonSelectedTab(tabIndex);
@@ -373,15 +333,17 @@ public class StatsFragment extends Fragment {
         });
         confirmDeleteDialog.show();
     }
+    /*demande la confirmation avant d'effacer toutes les informations relatives au
+    * dataset actuel et syncronise le graphique et lea liste des parties avec la BD*/
     private void dialogueEffacerConfirmation() {
-        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext(),R.style.confirmDialogueTheme);
+        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext(), R.style.confirmDialogueTheme);
         confirmDeleteDialog.setTitle(R.string.effacer);
         confirmDeleteDialog.setMessage(R.string.effacerStatistiques);
         confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 mainActivity.clearData();
-                remplirStatsParties();
+                remplirListeParties();
                 chart.clear();
                 dialogInterface.dismiss();
             }
@@ -394,67 +356,5 @@ public class StatsFragment extends Fragment {
         });
         confirmDeleteDialog.show();
     }
-
-//    private void dialogueConfirmation(Score score) {
-//        AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
-//        confirmDeleteDialog.setTitle(R.string.effacer);
-//        confirmDeleteDialog.setMessage("Voulez-vous vraiment Effacer le score de " + score.getNomJoueur() + " inscrit le " + score.getTemps().toString().substring(0, score.getTemps().toString().length() - 7) + "?");
-//        confirmDeleteDialog.setPositiveButton("Effacer", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                mainActivity.effacerScore(score);
-//                String nomJoueur = cmbJoueurs.getSelectedItem().toString();
-//                remplirStatsJoueur(nomJoueur);
-//                dialogInterface.dismiss();
-//            }
-//        });
-//        confirmDeleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                dialogInterface.dismiss();
-//            }
-//        });
-//        confirmDeleteDialog.show();
-//    }
-
-//    private void remplirStatsJoueur(String nomJoueur) {
-//
-//        ArrayAdapter<String> adapteur;
-//        ArrayList<String> listeStringFormatScores = scoresArrayStringFactory(nomJoueur);
-//        adapteur = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, listeStringFormatScores);
-//        listeScores.setAdapter(adapteur);
-//    }
-
-//    private ArrayList<String> scoresArrayStringFactory(String nomJoueur) {
-//        ArrayList<String> scoresString = new ArrayList(0);
-//        ArrayList<Score> scores = mainActivity.getScores();
-//        for (Score score : scores) {
-//            if (score.getNomJoueur().equals(nomJoueur)) {
-//                scoresString.add(score.getNomJoueur() + " " + new Date(score.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.score) + ": " + score.getScore());
-//            }
-//        }
-//
-//        return scoresString;
-//    }
-
-    private ArrayList<String> partiesToStringEnLigne(ArrayList<Partie> parties) {
-        ArrayList<String> partiesString = new ArrayList(0);
-        for (Partie partie : parties) {
-            partiesString.add(new Date(partie.getTemps().getTime()).toString().substring(4, 19) + " " + getString(R.string.point) + ": " + partie.getPointAmeliorer());
-        }
-        return partiesString;
-    }
-
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    private ArrayList<String> partiesToStringJour() {
-//        ArrayList<String> partiesString = new ArrayList(0);
-//        ArrayList<Stats> listeStats = mainActivity.getStatsGrouperJour();
-//        int i = 1;
-//        for (Stats stats : listeStats) {
-//            partiesString.add("Jour " + i++ + " " + stats.getNomPoint() + " :" + stats.getRatio() * 100 + "%");
-//        }
-//        return partiesString;
-//    }
-
 
 }

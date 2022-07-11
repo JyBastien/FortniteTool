@@ -77,12 +77,15 @@
     <last-used-operator value="EQUAL" />
     <filters />
   </component>
+  <component name="DBNavigator.Project.ParserDiagnosticsManager">
+    <diagnostics-history />
+  </component>
   <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
     <recently-used-interfaces />
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="da2ae604-5212-487a-9f0e-f4dc96df7d4a" active="true">
+      <connection id="da2ae604-5212-487a-9f0e-f4dc96df7d4a" active="true" signed="true">
         <database>
           <name value="ConnexionSQlite" />
           <description value="" />
@@ -169,7 +172,7 @@
           <object-name-filters />
         </object-filters>
       </connection>
-      <connection id="1351f37f-8def-4647-b5c7-0a38f96cb833" active="true">
+      <connection id="1351f37f-8def-4647-b5c7-0a38f96cb833" active="true" signed="true">
         <database>
           <name value="Connection" />
           <description value="" />

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/*Classe qui représente une unité statistique d'un ensemble d'entrées
+ * elle contient le nom du point qui revient le plus souvent dans sa liste
+ * dentrées ainsi que le ration de son occurance et le nombre totale d'entrées
+ * quelle représente. Sera en fait une colonne du graphique*/
 public class Stats {
     private int statsID;
     private int interval;
@@ -14,9 +18,9 @@ public class Stats {
     private LocalDate dateDebut;
     private LocalDate dateFin;
     private int qteEntrees;
-    private HashMap<String,Integer> entrees;
+    private HashMap<String, Integer> entrees;
 
-    public Stats(int interval, String nom, double ratio, LocalDate dateDebut, LocalDate dateFin, HashMap<String,Integer> entrees,int qteEntrees) {
+    public Stats(int interval, String nom, double ratio, LocalDate dateDebut, LocalDate dateFin, HashMap<String, Integer> entrees, int qteEntrees) {
 
         this.interval = interval;
         this.nom = nom;
@@ -75,32 +79,22 @@ public class Stats {
         this.ratio = ratio;
     }
 
-    public static ArrayList<Stats> getStatsParJour(ArrayList<Partie> partiesOrderedParJour) {
-        ArrayList<Stats> stats = getStatsParIntervalJour(partiesOrderedParJour);
-        return stats;
-    }
-    public static ArrayList<Stats> getStatsParSemaine(ArrayList<Partie> partiesOrderedParJour) {
-        ArrayList<Stats> stats =  getStatsParIntervalSemaine(partiesOrderedParJour);
-        //Pour commencer avec le premier du mois
-        //dateFin = dateDebut.withDayOfMonth(1);
-
-        return stats;
-    }
-    private static ArrayList<Stats> getStatsParIntervalJour(ArrayList<Partie> partiesOrderedParJour) {
+    /*prends en paramètre une liste de parties ordonnées par date et regroupe les parties par jour pour construire
+    * un array de stats qui sera retournée */
+    public static ArrayList<Stats> getStatsParIntervalJour(ArrayList<Partie> partiesOrderedParJour) {
         ArrayList<Stats> stats = new ArrayList<>();
         Partie partie;
         LocalDate ancienneDate = null;
         LocalDate date = null;
-        HashMap<String,Integer> statsBuilder = new HashMap<>();
+        HashMap<String, Integer> statsBuilder = new HashMap<>();
 
         String pointAmeliorer;
         int qte = 0;
 
-        for (int i = 0; i < partiesOrderedParJour.size() && stats.size() < 5; i++)
-        {
+        for (int i = 0; i < partiesOrderedParJour.size() && stats.size() < 5; i++) {
             partie = partiesOrderedParJour.get(i);
             date = partie.getDate();
-            if (ancienneDate == null){
+            if (ancienneDate == null) {
                 ancienneDate = date;
             }
 
@@ -115,36 +109,36 @@ public class Stats {
             }
             //stats building
             pointAmeliorer = partie.getPointAmeliorer();
-            if (statsBuilder.containsKey(pointAmeliorer)){
+            if (statsBuilder.containsKey(pointAmeliorer)) {
                 qte = statsBuilder.get(partie.getPointAmeliorer()) + 1;
             } else {
                 qte = 1;
             }
             statsBuilder.put(pointAmeliorer, qte);
         }
-        if (statsBuilder.size() > 0){
+        if (statsBuilder.size() > 0) {
             Stats stat = getStats(statsBuilder, date, date);
             stats.add(stat);
         }
         return stats;
     }
-
-    private static ArrayList<Stats> getStatsParIntervalSemaine(ArrayList<Partie> partiesOrderedParJour) {
+    /*prends en paramètre une liste de parties ordonnées par date et regroupe les parties par semaine pour construire
+     * un array de stats qui sera retournée */
+    public static ArrayList<Stats> getStatsParIntervalSemaine(ArrayList<Partie> partiesOrderedParJour) {
 
         Partie partie;
         LocalDate dateDebut = null;
         LocalDate date = null;
         LocalDate dateFin = null;
         ArrayList<Stats> stats = new ArrayList<>();
-        HashMap<String,Integer> statsBuilder = new HashMap<>();
+        HashMap<String, Integer> statsBuilder = new HashMap<>();
         String pointAmeliorer;
         int qte = 0;
 
-        for (int i = 0; i < partiesOrderedParJour.size() && stats.size() < 5; i++)
-        {
+        for (int i = 0; i < partiesOrderedParJour.size() && stats.size() < 5; i++) {
             partie = partiesOrderedParJour.get(i);
             date = partie.getDate();
-            if (dateDebut == null){
+            if (dateDebut == null) {
                 dateDebut = date.with(DayOfWeek.MONDAY);
                 dateFin = dateDebut.plusDays(6);
             }
@@ -161,34 +155,29 @@ public class Stats {
             }
             //stats building
             pointAmeliorer = partie.getPointAmeliorer();
-            if (statsBuilder.containsKey(pointAmeliorer)){
+            if (statsBuilder.containsKey(pointAmeliorer)) {
                 qte = statsBuilder.get(partie.getPointAmeliorer()) + 1;
             } else {
                 qte = 1;
             }
             statsBuilder.put(pointAmeliorer, qte);
         }
-        if (statsBuilder.size() > 0){
+        if (statsBuilder.size() > 0) {
             Stats stat = getStats(statsBuilder, dateDebut, dateFin);
             stats.add(stat);
         }
         return stats;
     }
 
-    private static void initialiserDateStatsIntervalSemaine(LocalDate dateDebut, LocalDate date, LocalDate dateFin) {
-        dateDebut = date.with(DayOfWeek.MONDAY);
-        dateFin = dateDebut.plusDays(6);
-    }
-
-
+    /*transforme un hash map d'entrées en une donnée statistique qui représentera une colonne du graphique*/
     public static Stats getStats(HashMap<String, Integer> statsBuilder, LocalDate dateDebut, LocalDate dateFin) {
         int highScore = 0;
         String pointHighScore = null;
         int qteTotal = 0;
         double ratio;
 
-        for (Map.Entry<String,Integer> resultat : statsBuilder.entrySet()){
-            if (resultat.getValue() > highScore ){
+        for (Map.Entry<String, Integer> resultat : statsBuilder.entrySet()) {
+            if (resultat.getValue() > highScore) {
                 highScore = resultat.getValue();
                 pointHighScore = resultat.getKey();
             }
@@ -197,7 +186,7 @@ public class Stats {
         Stats stat = null;
         if (qteTotal > 0) {
             ratio = ((double) highScore) / qteTotal;
-            stat = new Stats(7, pointHighScore, ratio, dateDebut, dateFin, statsBuilder,qteTotal);
+            stat = new Stats(7, pointHighScore, ratio, dateDebut, dateFin, statsBuilder, qteTotal);
         }
         return stat;
     }

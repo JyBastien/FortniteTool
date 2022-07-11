@@ -23,15 +23,12 @@ import modele.Point;
  * Use the {@link ModifierElementFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+/*Permet à l'utlisateur de modifier un nom d'élément fournit en paramètre*/
 public class ModifierElementFragment extends Fragment {
 
     public static final String DATASET = "DataSet";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private String type;
@@ -46,12 +43,10 @@ public class ModifierElementFragment extends Fragment {
     public ModifierElementFragment() {
         // Required empty public constructor
     }
-
     public ModifierElementFragment(String type, String nomElement) {
         this.type = type;
         this.nomElement = nomElement;
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -60,7 +55,6 @@ public class ModifierElementFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment ModifierElementFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ModifierElementFragment newInstance(String param1, String param2) {
         ModifierElementFragment fragment = new ModifierElementFragment();
         Bundle args = new Bundle();
@@ -69,7 +63,6 @@ public class ModifierElementFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +71,6 @@ public class ModifierElementFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,7 +80,7 @@ public class ModifierElementFragment extends Fragment {
         setListeners();
         return view;
     }
-
+    /*associe les attributes de la classe aux objets graphiques du layout*/
     private void setWidgets(View view) {
         this.txtNomOriginal = view.findViewById(R.id.txtNomElementOriginal);
         this.txtNouveauNom = view.findViewById(R.id.txtNouveauNomElement);
@@ -100,7 +92,7 @@ public class ModifierElementFragment extends Fragment {
         this.btnRetour = view.findViewById(R.id.btnRetour);
         this.activity = (MainActivity) this.getActivity();
     }
-
+    /*attache les lsitenenrts aux boutons du layout*/
     private void setListeners() {
         btnEnregistrer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,11 +117,11 @@ public class ModifierElementFragment extends Fragment {
         btnRetour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.remplacerFragment(new ElementConfigFragment(getResources().getString(R.string.points_am_liorer)));
+                activity.remplacerFragment(new ConfigFragment(getResources().getString(R.string.points_am_liorer)));
             }
         });
     }
-
+    /*affiche une demande confirmation à l'utilisateur avant d'effacer le point sélectionné*/
     private void dialogueConfirmation() {
         AlertDialog.Builder confirmDeleteDialog = new AlertDialog.Builder(this.getContext());
         confirmDeleteDialog.setTitle(R.string.effacer);
@@ -137,7 +129,6 @@ public class ModifierElementFragment extends Fragment {
         confirmDeleteDialog.setPositiveButton(R.string.effacer, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
                 if (activity.getPoints().size() > 1) {
                     activity.effacerPoint(nomElement);
                 } else {
@@ -154,7 +145,7 @@ public class ModifierElementFragment extends Fragment {
         });
         confirmDeleteDialog.show();
     }
-
+    /*affiche un message d'erreur fournit en paramètres à l'utilisateur*/
     private void alertDialogueMessage(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle(R.string.erreur);
@@ -167,11 +158,9 @@ public class ModifierElementFragment extends Fragment {
         });
         builder.show();
     }
-
+    /*initialise les text des textviews*/
     private void setValues() {
         this.txtNomOriginal.setText(R.string.renommer);
         txtNouveauNom.setText(this.nomElement);
     }
-
-
 }

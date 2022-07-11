@@ -1,5 +1,6 @@
 package modele;
-
+/*Classe qui est utilisée pour permettre de trier l'arraylist qui contiendra les instances
+* par son comparable qu'elle implémente*/
 public class Entree implements Comparable{
     private String texte;
     private int qte;
